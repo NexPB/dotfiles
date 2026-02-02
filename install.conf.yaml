@@ -1,4 +1,6 @@
 - clean: []
+- create:
+    - ~/.config/ghostty
 - link:
     ~/.config/ghostty/config: ghostty/config
 - shell:
