@@ -1,7 +1,9 @@
 - clean: []
 - create:
     - ~/.config/ghostty
+    - ~/.ssh
 - link:
     ~/.config/ghostty/config: ghostty/config
+    ~/.ssh/config: .ssh/config
 - shell:
     - [git submodule update --init --recursive, Installing submodules]
