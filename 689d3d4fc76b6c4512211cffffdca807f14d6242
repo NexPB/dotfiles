@@ -1,0 +1,25 @@
+install.conf.yaml
+  858b59730bbdd8a9 12
+.ssh/config
+  858b59730bbdd8a9 1-2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.4",
+  "base_commit_sha": "689d3d4fc76b6c4512211cffffdca807f14d6242",
+  "prompts": {
+    "858b59730bbdd8a9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d3feaa1f-b903-4cbd-8327-c29837fbb833",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "NexPB",
+      "messages": [],
+      "total_additions": 8,
+      "total_deletions": 4,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    }
+  }
+}
