@@ -1,13 +1,18 @@
 ---
 name: commit-all
 description: "Commit ALL current changes (staged, unstaged, and untracked) with an AI-generated commit message. Use when the user wants to quickly commit everything without manually staging."
-argument-hint: "[optional commit message override]"
+argument-hint: "[--mine | optional commit message override]"
 allowed-tools: ["Bash(git:*)", "Read"]
 ---
 
 # Commit All Skill
 
 Commit **all** current changes — staged, unstaged, and untracked files — with an automatically generated commit message.
+
+## Modes
+
+- **Default:** Commit all changes (staged, unstaged, untracked).
+- **`--mine`:** Only commit files that Claude touched during this conversation. Determine which files Claude touched by reviewing the conversation history for Edit, Write, and MultiEdit tool calls. Ignore files the user changed outside of Claude's tool calls.
 
 ## Steps
 
@@ -19,14 +24,16 @@ Commit **all** current changes — staged, unstaged, and untracked files — wit
    - `git status` — untracked files
    - `git log --oneline -5` — recent commit style
 
-3. **Stage everything.** Run `git add -A` to stage all changes (modified, deleted, and untracked).
+3. **Stage files.**
+   - **Default mode:** Run `git add -A` to stage all changes.
+   - **`--mine` mode:** Review the conversation history and collect the list of file paths from all Edit, Write, and MultiEdit tool calls made by Claude. Stage only those files with `git add <file1> <file2> ...`. If none of Claude's files have changes, tell the user and stop.
 
-4. **Generate commit message.** Analyze all the changes and write a concise commit message:
+4. **Generate commit message.** Analyze the staged changes and write a concise commit message:
    - First line: imperative mood summary, under 72 characters (e.g. "Add user auth flow" not "Added user auth flow")
    - If the changes warrant it, add a blank line then a short body with bullet points
    - Match the style of recent commits in the repo
    - Focus on the *why* not the *what*
-   - If the user provided a message as an argument, use that instead of generating one
+   - If the user provided a message (not `--mine`), use that instead of generating one
 
 5. **Commit.** Create the commit using a HEREDOC for the message:
    ```
@@ -38,7 +45,7 @@ Commit **all** current changes — staged, unstaged, and untracked files — wit
    )"
    ```
 
-6. **Verify.** Run `git status` to confirm the commit succeeded and the working tree is clean.
+6. **Verify.** Run `git status` to confirm the commit succeeded.
 
 7. **Report.** Show the user a brief summary: commit hash, message, and number of files changed.
 
