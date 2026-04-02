@@ -1,0 +1,23 @@
+agents/skills/commit-all/SKILL.md
+  384ddc6a7319f009 4,12-16,27-29,31,36,48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.4",
+  "base_commit_sha": "c3888dba8ac98cc3f3be200f97f1c369456603fc",
+  "prompts": {
+    "384ddc6a7319f009": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "525a9e34-2422-4588-804e-efd0979fecac",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "NexPB",
+      "messages": [],
+      "total_additions": 12,
+      "total_deletions": 5,
+      "accepted_lines": 12,
+      "overriden_lines": 0
+    }
+  }
+}
