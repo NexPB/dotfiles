@@ -9,3 +9,4 @@
     ~/.claude/skills: agents/skills
 - shell:
     - [git submodule update --init --recursive, Installing submodules]
+    - ['[ -f ~/.ssh/config.local ] || cp .ssh/config.local ~/.ssh/config.local', Seeding local SSH config]
