@@ -1,0 +1,23 @@
+install.conf.yaml
+  5084847207fb124f 5,10-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "795daf44a4c29a61a800bd5511f8a205111c1e71",
+  "prompts": {
+    "5084847207fb124f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ee8ee4a2-25e7-4070-86c2-041a4d15916e",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "NexPB",
+      "messages": [],
+      "total_additions": 5,
+      "total_deletions": 1,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    }
+  }
+}
