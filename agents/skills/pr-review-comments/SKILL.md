@@ -24,7 +24,7 @@ If neither works, ask the user which PR to address.
 Run the script to get all unresolved (pending) review threads, including the IDs needed to post replies:
 
 ```bash
-bash .agents/skills/reviewing-pr-comments/scripts/fetch-comments.sh <PR_NUMBER>
+bash ~/.claude/skills/pr-review-comments/scripts/fetch-comments.sh <PR_NUMBER>
 ```
 
 This outputs JSON with each unresolved thread:
