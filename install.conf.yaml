@@ -2,11 +2,15 @@
 - create:
     - ~/.config/ghostty
     - ~/.ssh
+    - ~/.claude/skills
 - link:
     ~/.config/ghostty/config: ghostty/config
     ~/.ssh/config: .ssh/config
     ~/.claude/settings.json: agents/claude-settings.json
-    ~/.claude/skills: agents/skills
+    ~/.claude/skills/ask: agents/skills/ask
+    ~/.claude/skills/commit-all: agents/skills/commit-all
+    ~/.claude/skills/git-ai-search: agents/skills/git-ai-search
+    ~/.claude/skills/prompt-analysis: agents/skills/prompt-analysis
 - shell:
     - [git submodule update --init --recursive, Installing submodules]
     - ['[ -f ~/.ssh/config.local ] || cp .ssh/config.local ~/.ssh/config.local', Seeding local SSH config]
