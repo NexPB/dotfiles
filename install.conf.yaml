@@ -9,6 +9,7 @@
     ~/.claude/settings.json: agents/claude-settings.json
     ~/.claude/skills/ask: agents/skills/ask
     ~/.claude/skills/commit-all: agents/skills/commit-all
+    ~/.claude/skills/elixir-ecto-explain-query: agents/skills/elixir-ecto-explain-query
     ~/.claude/skills/git-ai-search: agents/skills/git-ai-search
     ~/.claude/skills/prompt-analysis: agents/skills/prompt-analysis
     ~/.claude/skills/pr-review-comments: agents/skills/pr-review-comments
