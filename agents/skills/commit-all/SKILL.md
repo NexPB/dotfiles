@@ -2,7 +2,7 @@
 name: commit-all
 description: "Commit ALL current changes (staged, unstaged, and untracked) with an AI-generated commit message. Use when the user wants to quickly commit everything without manually staging."
 argument-hint: "[--mine | optional commit message override]"
-allowed-tools: ["Bash(git:*)", "Read"]
+user-invocable: true
 ---
 
 # Commit All Skill
@@ -35,12 +35,12 @@ Commit **all** current changes — staged, unstaged, and untracked files — wit
    - Focus on the *why* not the *what*
    - If the user provided a message (not `--mine`), use that instead of generating one
 
-5. **Commit.** Create the commit using a HEREDOC for the message:
+5. **Commit.** Create the commit with attribution using a HEREDOC for the message:
    ```
    git commit -m "$(cat <<'EOF'
-   <message here>
+   [message here]
 
-   Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+   [attribution line if applicable]
    EOF
    )"
    ```

@@ -2,7 +2,7 @@
 name: prompt-analysis
 description: "Analyze AI prompting patterns and acceptance rates"
 argument-hint: "[question about prompts]"
-allowed-tools: ["Bash(git-ai:*)", "Read", "Glob", "Grep", "Task"]
+user-invocable: true
 ---
 
 # Prompt Analysis Skill

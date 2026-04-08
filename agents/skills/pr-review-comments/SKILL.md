@@ -1,6 +1,7 @@
 ---
 name: pr-review-comments
 description: "Fetch unresolved review comments on a GitHub pull request and post a reply to each one analysing whether it should be addressed, with concrete steps when it should. Makes NO codebase changes. Use when asked to review PR comments, triage review feedback, or draft reply plans for PR threads."
+user-invocable: true
 ---
 
 # Reviewing PR Comments

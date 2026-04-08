@@ -1,4 +1,18 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Edit",
+      "Agent(Explore)",
+      "Bash(find:*)",
+      "Bash(ls*)",
+      "Bash(git add:*)"
+    ],
+    "ask": [
+      "Bash(gh pr create:*)"
+    ],
+    "defaultMode": "acceptEdits"
+  },
   "hooks": {
     "PostToolUse": [
       {

@@ -2,7 +2,7 @@
 name: git-ai-search
 description: "Search and restore AI conversation context from git history"
 argument-hint: "[search query or workflow]"
-allowed-tools: ["Bash(git-ai:*)", "Read", "Glob", "Grep"]
+user-invocable: true
 ---
 
 # Git AI Search Skill
