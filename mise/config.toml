@@ -1,0 +1,3 @@
+[tools]
+ripgrep = { version = "latest", os = ["linux", "macos"] }
+fd      = { version = "latest", os = ["linux", "macos"] }

@@ -1,2 +1,0 @@
-brew "ripgrep"
-brew "fd"

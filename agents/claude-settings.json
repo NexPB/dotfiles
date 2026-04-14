@@ -31,6 +31,8 @@
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(ls*)",
+      "Bash(rg:*)",
+      "Bash(fd:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)"
     ],
