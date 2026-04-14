@@ -1,0 +1,27 @@
+install.conf.yaml
+  f2d0e1a7e127ecf6 19-22
+Brewfile
+  f2d0e1a7e127ecf6 1-2
+README.md
+  f2d0e1a7e127ecf6 14-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "161b76611ed206302d6c6cf87ee71c2598fc18ab",
+  "prompts": {
+    "f2d0e1a7e127ecf6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e5d81d66-c3e4-405e-b591-64fa3688b3d5",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "NexPB",
+      "messages": [],
+      "total_additions": 8,
+      "total_deletions": 0,
+      "accepted_lines": 8,
+      "overriden_lines": 0
+    }
+  }
+}
