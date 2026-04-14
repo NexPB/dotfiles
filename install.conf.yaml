@@ -16,3 +16,7 @@
 - shell:
     - [git submodule update --init --recursive, Installing submodules]
     - ['[ -f ~/.ssh/config.local ] || cp .ssh/config.local ~/.ssh/config.local', Seeding local SSH config]
+    - command: 'if command -v brew >/dev/null 2>&1; then brew bundle --file=Brewfile; else echo "warning: brew not found on PATH, skipping Homebrew packages"; fi'
+      description: Installing Homebrew packages
+      stderr: true
+      stdout: true
