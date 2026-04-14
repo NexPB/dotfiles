@@ -1,0 +1,29 @@
+install.conf.yaml
+  f2d0e1a7e127ecf6 6,9,21-22
+README.md
+  f2d0e1a7e127ecf6 13-17
+agents/claude-settings.json
+  f2d0e1a7e127ecf6 34-35
+mise/config.toml
+  f2d0e1a7e127ecf6 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "c47049f2ad6437ddbccd8b86d51f8ed102f038ef",
+  "prompts": {
+    "f2d0e1a7e127ecf6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e5d81d66-c3e4-405e-b591-64fa3688b3d5",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "NexPB",
+      "messages": [],
+      "total_additions": 14,
+      "total_deletions": 2,
+      "accepted_lines": 14,
+      "overriden_lines": 0
+    }
+  }
+}
