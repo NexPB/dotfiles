@@ -1,0 +1,14 @@
+agents/claude-settings.json
+  h_ab8f590a2a90e1 19,23-29,34-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "083d485b4feca19a9a82c39e521a7b7f194e7b55",
+  "prompts": {},
+  "humans": {
+    "h_ab8f590a2a90e1": {
+      "author": "NexPB"
+    }
+  }
+}
