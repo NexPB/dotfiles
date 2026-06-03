@@ -1,3 +1,9 @@
 [tools]
+elixir = "1.18"
+erlang = "27"
+node = "22"
 ripgrep = { version = "latest", os = ["linux", "macos"] }
 fd      = { version = "latest", os = ["linux", "macos"] }
+
+[settings]
+idiomatic_version_file_enable_tools = ["node"]

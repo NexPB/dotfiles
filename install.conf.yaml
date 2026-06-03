@@ -6,7 +6,9 @@
     - ~/.config/mise
 - link:
     ~/.config/ghostty/config: ghostty/config
-    ~/.config/mise/config.toml: mise/config.toml
+    ~/.config/mise/config.toml:
+        path: mise/config.toml
+        force: true
     ~/.ssh/config: .ssh/config
     ~/.claude/settings.json: agents/claude-settings.json
     ~/.claude/skills/ask: agents/skills/ask
