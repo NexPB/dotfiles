@@ -1,0 +1,50 @@
+install.conf.yaml
+  h_8c8bb3a0db3180 13,16,23
+  s_57d78ac491e79a::t_7a49c3144ffd07 17
+agents/skills/commit/SKILL.md
+  s_57d78ac491e79a::t_613903d8f23ab6 10,14,16,35,39,51
+  s_57d78ac491e79a::t_536e181bb8fc92 15,17-20,26,28,31,37,44-46,50,52
+  s_57d78ac491e79a::t_7a49c3144ffd07 1-2,4-9,11,13,21-23,32,48-49
+  s_57d78ac491e79a::t_7daad928f1af4e 3,12,24-25,27,29-30,36,38,40-43,53
+  s_57d78ac491e79a::t_7ecfe42f0fcfeb 33-34,47
+agents/skills/pr-review-comments/SKILL.md
+  s_bbd32ea64d43b5::t_73993ddf212682 3,13-66,100,107,110-113,124-125,128-159,182
+agents/skills/whut/SKILL.md
+  h_8c8bb3a0db3180 1-7
+agents/AGENTS.md
+  h_8c8bb3a0db3180 1-22
+agents/skills/blast-radius/SKILL.md
+  h_8c8bb3a0db3180 1-50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c49f2ad44177c041c8fecf07e2ac64d8a995896e",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    },
+    "h_ab8f590a2a90e1": {
+      "author": "NexPB"
+    }
+  },
+  "sessions": {
+    "s_57d78ac491e79a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7d8c72ce-bf81-48bc-b0e7-77cf5be4b5b3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    },
+    "s_bbd32ea64d43b5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ad0424e6-dc6a-461a-ae77-01f3a9298665",
+        "model": "claude-opus-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
