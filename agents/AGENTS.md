@@ -20,3 +20,16 @@ DO add comments that:
 - explain the existing code
 - document gotchas and unknowns
 - teach the consumer
+
+### Docstrings
+
+Docstrings (`@doc`, `@moduledoc`, JSDoc) are public facing. They state what the
+code does and the contract a consumer depends on.
+
+DO NOT put in a docstring:
+
+- why the implementation is written the way it is
+- a workaround, a constraint, or a defect in other code
+- a note aimed at the next person to edit the code
+
+That rationale belongs in a code comment, next to the line it explains.
