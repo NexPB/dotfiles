@@ -1,0 +1,24 @@
+agents/AGENTS.md
+  s_752cf464eda35e::t_70d9a8d397a158 23-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "533987eb93955ab412908818606c59662dd5cffc",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_752cf464eda35e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3fde4efb-a4cd-41f9-b69d-06e1e5355403",
+        "model": "claude-opus-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
