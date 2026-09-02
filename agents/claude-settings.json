@@ -1,9 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "model": "opus[1m]",
-  "effortLevel": "high",
-  "skipDangerousModePermissionPrompt": true,
-  "theme": "dark",
   "permissions": {
     "allow": [
       "Edit",
@@ -23,6 +19,7 @@
     ],
     "defaultMode": "auto"
   },
+  "model": "opus[1m]",
   "hooks": {
     "PostToolUse": [
       {
@@ -46,5 +43,13 @@
         ]
       }
     ]
-  }
+  },
+  "effortLevel": "high",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "xhigh"
+    }
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark"
 }
