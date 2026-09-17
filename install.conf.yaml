@@ -5,6 +5,7 @@
     - ~/.claude/skills
     - ~/.claude/bin
     - ~/.config/mise
+    - ~/.vscode/extensions
 - link:
     ~/.config/ghostty/config: ghostty/config
     ~/.config/mise/config.toml:
@@ -27,6 +28,7 @@
     ~/.claude/skills/pr-review-comments: agents/skills/pr-review-comments
     ~/.claude/skills/simplify-docs: agents/skills/simplify-docs
     ~/.claude/skills/whut: agents/skills/whut
+    ~/.vscode/extensions/duvel-theme: vscode/duvel
 - shell:
     - [git submodule update --init --recursive, Installing submodules]
     - ['[ -f ~/.ssh/config.local ] || cp .ssh/config.local ~/.ssh/config.local', Seeding local SSH config]
