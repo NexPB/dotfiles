@@ -14,6 +14,7 @@
     ~/.claude/settings.json: agents/claude-settings.json
     ~/.claude/skills/ask: agents/skills/ask
     ~/.claude/skills/blast-radius: agents/skills/blast-radius
+    ~/.claude/skills/build: agents/skills/build
     ~/.claude/skills/commit: agents/skills/commit
     ~/.claude/skills/elixir-ecto-explain-query: agents/skills/elixir-ecto-explain-query
     ~/.claude/skills/git-ai-search: agents/skills/git-ai-search
