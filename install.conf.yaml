@@ -3,6 +3,7 @@
     - ~/.config/ghostty
     - ~/.ssh
     - ~/.claude/skills
+    - ~/.claude/bin
     - ~/.config/mise
 - link:
     ~/.config/ghostty/config: ghostty/config
@@ -12,6 +13,9 @@
     ~/.ssh/config: .ssh/config
     ~/.claude/CLAUDE.md: agents/AGENTS.md
     ~/.claude/settings.json: agents/claude-settings.json
+    ~/.claude/bin/comment-guard:
+        path: agents/bin/comment-guard-2f934a0
+        relink: true
     ~/.claude/skills/ask: agents/skills/ask
     ~/.claude/skills/blast-radius: agents/skills/blast-radius
     ~/.claude/skills/build: agents/skills/build
