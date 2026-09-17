@@ -1,0 +1,36 @@
+vscode/duvel/package.json
+  s_01c17d4bce2fb0::t_812fe60ac8f100 4
+  s_01c17d4bce2fb0::t_11221ac7c1e0b1 1-3,6-19,25-28
+  s_01c17d4bce2fb0::t_ece7f71ac1f371 20-24
+  s_01c17d4bce2fb0::t_bbdb760b247c6b 5
+install.conf.yaml
+  s_01c17d4bce2fb0::t_d6a2ef192559cb 8
+  s_01c17d4bce2fb0::t_782a0dac1a6d8e 31
+vscode/duvel/themes/duvel-color-theme.json
+  s_01c17d4bce2fb0::t_f80f9e11b09fa4 1-893
+vscode/duvel/themes/duvel-quadrupel-color-theme.json
+  s_01c17d4bce2fb0::t_7a827f63713809 885
+  s_01c17d4bce2fb0::t_a0e3aff78f410f 1-655,657-884,886-902
+  s_01c17d4bce2fb0::t_ad0d4f1ede5ebc 656
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e7a1b01f66a0482bfae928358b8a20abd8e8765b",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_01c17d4bce2fb0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c8c2080d-bd91-4c12-b1fa-a593fe7b4663",
+        "model": "claude-opus-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
