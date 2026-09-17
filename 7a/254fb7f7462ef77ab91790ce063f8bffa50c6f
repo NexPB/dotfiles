@@ -1,0 +1,35 @@
+FLAGS.md
+  s_452be483112b02::t_d4c9b0afbcc0fe 1-31
+README.md
+  s_452be483112b02::t_435811a2c8daed 19-21,23-24,26-32,34-37
+  s_452be483112b02::t_e1b37ae6991e77 14-18,22,25,33,38,40
+  s_452be483112b02::t_4e236d42bd6872 39
+.gitattributes
+  s_452be483112b02::t_51c117288b2cb7 1
+install.conf.yaml
+  s_452be483112b02::t_d85fcf62c4f774 16-18
+  s_452be483112b02::t_a2021852df641c 6
+agents/claude-settings.json
+  s_452be483112b02::t_a3f60c527bd03d 33-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7a254fb7f7462ef77ab91790ce063f8bffa50c6f",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_452be483112b02": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da5bd85-abee-4215-a9fd-24cd1ac70cce",
+        "model": "claude-opus-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
