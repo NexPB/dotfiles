@@ -1,0 +1,34 @@
+agents/skills/build/SKILL.md
+  s_84de1c44e3b28c::t_01e2c55da5eb93 1-66
+install.conf.yaml
+  s_452be483112b02::t_9252ad659f2612 17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f1d8516fa77d375645baac08c9f49a13499c6feb",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_452be483112b02": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da5bd85-abee-4215-a9fd-24cd1ac70cce",
+        "model": "unknown"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    },
+    "s_84de1c44e3b28c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "82ad02d3-a0bc-4a5a-9dad-047c0e1d305c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
