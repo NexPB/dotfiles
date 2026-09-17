@@ -1,0 +1,24 @@
+agents/skills/simplify-docs/SKILL.md
+  s_b078e4f57ec41e::t_c7ffd44de639d3 3,10-14,34-47,49-65,74-75,78-79,83,85,89-91,100,104-105,128-130,132,136-138,140,142,147-151,155-156,164,172,175-176,195-196,198-199,208-209
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c167af2c317ad3531709dd260e96c826f49b8a3c",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_b078e4f57ec41e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ccfd0328-824f-433b-857f-359e2257a93e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
