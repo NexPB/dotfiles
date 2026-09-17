@@ -20,6 +20,9 @@
     "defaultMode": "auto"
   },
   "model": "opus[1m]",
+  "env": {
+    "CLAUDE_CODE_THRIFTY_SONIC": "false"
+  },
   "hooks": {
     "PostToolUse": [
       {
@@ -27,7 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/lorenzo/.git-ai/bin/git-ai checkpoint claude --hook-input stdin"
+            "command": "~/.git-ai/bin/git-ai checkpoint claude --hook-input stdin"
           }
         ]
       },
@@ -49,7 +52,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/lorenzo/.git-ai/bin/git-ai checkpoint claude --hook-input stdin"
+            "command": "~/.git-ai/bin/git-ai checkpoint claude --hook-input stdin"
           }
         ]
       }
@@ -58,7 +61,7 @@
   "effortLevel": "high",
   "modelSettings": {
     "claude-opus-5": {
-      "effortLevel": "xhigh"
+      "effortLevel": "high"
     }
   },
   "skipDangerousModePermissionPrompt": true,
