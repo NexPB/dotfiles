@@ -1,0 +1,33 @@
+agents/claude-settings.json
+  s_19a70c5ece6b33::t_38aaf2658dc3b0 23-25
+  s_452be483112b02::t_5a874862962353 33,55,64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "70e7beb0f01eac9bfcd4e036a590812ef092776a",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_19a70c5ece6b33": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f0ff961b-da05-4538-9706-b12a37d0dba1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    },
+    "s_452be483112b02": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da5bd85-abee-4215-a9fd-24cd1ac70cce",
+        "model": "unknown"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
