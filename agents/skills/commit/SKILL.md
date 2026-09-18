@@ -12,18 +12,15 @@ Commit only the changes that you made. The other changes belong to the user.
 ## Scope
 
 1. Run `git status` (never `-uall`) and `git log --oneline -5`. Stop if the tree is clean or this is not a git repo.
-2. List the files that you changed in this conversation. Take the list from your tool calls, not from the diff. With `--all`, take every dirty file.
-3. State the scope before you commit:
-   - Commit each dirty file that you changed.
-   - Drop each file of yours that is now clean.
-   - Name each dirty file that you did not change. Leave it alone. Mention `--all`.
+2. List the files that you changed in this conversation, from your tool calls, not from the diff. With `--all`, take every dirty file.
+3. State the scope before you commit: commit each dirty file that you changed; drop each file of yours that is now clean; name each dirty file that you did not change, leave it alone, and mention `--all`.
 4. Stop if none of your files is dirty. Never widen the scope.
 
 ## Commit
 
 5. Read `git diff -- <files>` and `git diff --cached -- <files>`.
-6. Stage the files by name: `git add -- <file> <file>`. Use `git add -A` only for `--all`.
-7. Write the message. Take the prefix and the shape from the recent commits. Take the words from the rules below.
+6. Stage by name: `git add -- <file> <file>`. Use `git add -A` only for `--all`.
+7. Write the message. Take the prefix and the shape from the recent commits, the words from the rules below.
    - Line 1 is one imperative sentence of 72 characters or fewer.
    - Add a body only if the reader needs the reason. Do not list the lines.
    - Use a message from the user as it is.
@@ -34,16 +31,11 @@ Commit only the changes that you made. The other changes belong to the user.
 
 Write the subject and the body to ASD-STE100.
 
-- Give each word one meaning.
-- Use the shortest correct word. Write "use", not "utilize".
+- Give each word one meaning. Use the shortest correct word: "use", not "utilize".
+- Use the active voice and a simple tense. Keep a sentence to 20 words.
+- Keep the articles. Narrow the scope to shorten a line. Start each bullet with an imperative verb.
+- Do not use jargon, an idiom, a metaphor, an `-ing` word as a noun or an adjective, or more than three joined nouns.
 - Keep code and command names as they are.
-- Do not use jargon, an idiom or a metaphor.
-- Do not join more than three nouns.
-- Use the active voice and a simple tense.
-- Do not use an `-ing` word as a noun or an adjective.
-- Keep a sentence to 20 words.
-- Keep the articles. Narrow the scope to shorten a line.
-- Start each bullet with an imperative verb.
 
 ## Rules
 
