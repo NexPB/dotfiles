@@ -65,5 +65,14 @@
     }
   },
   "skipDangerousModePermissionPrompt": true,
-  "theme": "dark"
+  "theme": "dark",
+  "skillOverrides": {
+    "wrangler": "off",
+    "agents-sdk": "off",
+    "cloudflare-email-service": "off",
+    "durable-objects": "off",
+    "sandbox-sdk": "off",
+    "web-perf": "off",
+    "workers-best-practices": "off"
+  }
 }
