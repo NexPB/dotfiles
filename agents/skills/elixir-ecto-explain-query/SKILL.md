@@ -1,53 +1,36 @@
 ---
 name: elixir-ecto-explain-query
-description: Debug slow Ecto queries by adding inline EXPLAIN ANALYZE instrumentation
+description: Debug a slow Ecto query by adding inline EXPLAIN ANALYZE instrumentation. Use when the user points to a slow Ecto query and wants to know why it is slow.
 user-invocable: true
 ---
 
-# Ecto Query EXPLAIN ANALYZE
+# Ecto query EXPLAIN ANALYZE
 
-Instrument an Ecto query with `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)` to diagnose performance bottlenecks.
-
-## When to use
-
-When the user points to a slow Ecto query and wants to understand why it's slow.
+Instrument an Ecto query with `EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)`, read the plan, fix the bottleneck, and measure again.
 
 ## Steps
 
-1. **Identify the query**: Find the Ecto query the user wants to analyze. It could be a composed query pipeline or a single `from` expression.
+1. **Find the query** that the user means: a composed pipeline or a single `from`.
+2. **Instrument it** with the snippet below, just before the query runs.
+3. **Trigger the code path.** Run it yourself when a test, a `mix run` or an `iex -S mix` call reaches it. Otherwise ask the user to trigger it. Then read the output file.
+4. **Read the plan** for these bottlenecks:
+   - Sequential scans on large tables: add an index or a partial index.
+   - A materialized subplan from `NOT IN (subquery)`: rewrite it as a correlated `EXISTS`, which stops at the first match.
+   - JIT time above about 500 ms: `SET jit = off` for the session, or reduce the query's complexity.
+   - High `shared read` against `shared hit`: a cold cache or table bloat.
+   - Nested loops with high row estimates: check the join conditions and the indexes on them.
+5. **Fix it and measure again** with the same instrumentation. Report the time before and after.
+6. **Remove the instrumentation** when the investigation ends.
 
-2. **Add instrumentation**: Wrap the query execution with timing and EXPLAIN ANALYZE. Use this pattern:
-
-3. **Important notes**:
-   - Use `Repo.to_sql/2` + `Ecto.Adapters.SQL.query!/4` instead of `Repo.explain/2` because `Repo.explain` fails with `CaseClauseError` on queries that use named bindings (`:as` option).
-   - Write EXPLAIN output to a file — Logger truncates long output.
-   - Always add `timeout: 30_000` to the EXPLAIN call since complex queries can take a while.
-   - Use `FORMAT TEXT` (not JSON) for human-readable output.
-
-4. **Ask the user to trigger the code path**, then read the EXPLAIN output file.
-
-5. **Analyze the EXPLAIN output** for common bottlenecks:
-   - **Sequential scans** on large tables: suggest indexes or partial indexes
-   - **Materialized subplans** (`NOT IN subquery`): restructure to `EXISTS` correlated subquery which short-circuits early
-   - **JIT compilation overhead**: if JIT time is significant (>500ms), consider `SET jit = off` for the session or reducing query complexity
-   - **Large buffer reads** (shared read vs shared hit): indicates cold cache or table bloat
-   - **Nested loops with high row estimates**: check join conditions and available indexes
-
-6. **Propose fixes** based on findings, then re-run EXPLAIN ANALYZE to confirm improvement.
-
-7. **Clean up**: Remove all instrumentation code (Logger, File.write!, :timer.tc) once the investigation is complete.
-
-## Example
+## Snippet
 
 ```elixir
-# Build the query as normal
-query = <...your_ecto_query...>
+query = <the ecto query>
 
-# Get raw SQL (works even with named bindings, unlike Repo.explain/2)
+# Repo.explain/2 raises CaseClauseError on queries with named bindings (`as:`).
 {sql, params} = Repo.to_sql(:all, query)
 
-# Run EXPLAIN ANALYZE
-explain_result =
+%{rows: rows} =
   Ecto.Adapters.SQL.query!(
     Repo,
     "EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT) #{sql}",
@@ -55,11 +38,11 @@ explain_result =
     timeout: 30_000
   )
 
-explain_result.rows
-|> Enum.map_join("\n", &hd/1)
-|> IO.inspect(label: "<context> EXPLAIN ANALYZE", printable_limit: :infinity, limit: :infinity)
+# Logger truncates long output, so write the plan to a file.
+File.write!("/tmp/explain_<context>.txt", Enum.map_join(rows, "\n", &hd/1))
 
-# Time the actual query
 {time_us, result} = :timer.tc(fn -> Repo.all(query) end)
-Logger.warning("<context>: query took #{time_us / 1_000}ms, returned #{length(result)} rows")
+File.write!("/tmp/explain_<context>.txt", "\n\n#{time_us / 1_000} ms, #{length(result)} rows\n", [:append])
 ```
+
+`EXPLAIN ANALYZE` runs the query, so the 30 s timeout covers a slow plan. `FORMAT TEXT` is the readable format; JSON is not.

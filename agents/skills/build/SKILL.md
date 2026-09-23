@@ -54,7 +54,7 @@ Can't say it in three lines? The slice is too big. Cut again. A slice that only 
 
 Only decisions that would cost real rework to rediscover, and only in hindsight — never write the line before doing the thing. Twenty lines is the cap: when it overflows, delete the lines that stopped mattering. It is a log, not a plan.
 
-**7. Name the next slice** in one line, then keep going. Come back to the user at forks and when the feature is done, not between slices.
+**7. Name the next slice** in one line, in the same message as the first tool call that builds it. A turn that ends on "next I'll do X" leaves X undone until the user answers. Come back to the user only at a fork from step 3, when a blocker needs them, or when the feature is done.
 
 ## What to hand back
 

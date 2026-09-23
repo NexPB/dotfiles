@@ -7,108 +7,53 @@ user-invocable: true
 
 # Styled HTML documents
 
-Turn what we've discussed in this conversation into a single HTML document, styled in
-the warm "claude.ai design system" (cream/ink palette, serif headings, embedded CSS,
-minimal JavaScript). The HTML is rendered first, then you proofread it and iterate
-before it's final.
+Turn the plan, design or feature from this conversation into one HTML file in the warm claude.ai design system: cream and ink palette, serif headings, embedded CSS, little JavaScript. The user proofreads the rendered page before it is final.
 
-Two modes:
+Two types:
 
-- **`design`** — an engineering design doc for developers: architecture, sequence,
-  components, code, data models, implementation steps, risks.
-- **`stakeholder`** — a communication doc for non-technical readers: benefits,
-  a simple how-it-works, roadmap, talking points, FAQ. **No code or jargon.**
+- **`design`**: an engineering design doc. Architecture, sequence, components, code, data models, implementation steps, risks.
+- **`stakeholder`**: a doc for non-technical readers. Benefits, a plain how-it-works, roadmap, talking points, FAQ. No code and no jargon, because the reader cannot use either.
 
-## Inputs
+## 1. Pick the type
 
-- The content comes from the **current conversation** — a plan, design, or feature
-  we have been working through. There is no file argument to parse.
-- The argument (if given) is the doc type: `design` or `stakeholder`.
+Use the argument. Otherwise infer it: "design doc", "for the team", "technical" → `design`; "stakeholders", "overview", "customer success", "non-technical" → `stakeholder`. Ask only when the request fits both.
 
-## Workflow
+## 2. Gather the content
 
-### Step 1 — Pick the doc type
+From the conversation, take the title, a one-line subtitle, the sections this type needs, and the detail behind them (`design`: paths, code, data shapes, sequence, risks; `stakeholder`: benefits, plain steps, prerequisites, timeline, FAQ).
 
-Use the argument if present. Otherwise infer from the request ("design doc / for the
-team / technical" → `design`; "for stakeholders / overview / customer success / non-
-technical" → `stakeholder`). If it's genuinely ambiguous, ask the user which one.
+The conversation is the only source. Leave out a section that it gives no basis for, rather than invent facts. Ask one short question only when something essential is missing.
 
-### Step 2 — Gather the content
+Match the length to the content. Cover the substance, and add no filler section, repeated summary or boilerplate to fill the template.
 
-From the conversation, determine:
+## 3. Choose the components
 
-- the **title** and a one-line **subtitle**,
-- the **sections** that matter for this doc type,
-- supporting detail (for `design`: file paths, code, data shapes, sequence, risks;
-  for `stakeholder`: benefits, plain-language steps, prerequisites, timeline, FAQs).
+Read `references/components.md` and map the content onto it, in this order:
 
-Do not invent facts. If a section has no basis in the conversation, leave it out
-rather than padding. If something essential is missing, ask a brief question.
+- **design**: Header → Lead/TL;DR → TOC → Context → Goals/Non-goals → Architecture diagram → Sequence → Components → Data/constraints → Implementation steps → Testing → Open questions/risks → Footer.
+- **stakeholder**: Header → Lead → Why it matters (value cards) → How it works (step flow) → What's needed (checklist) → In/out of scope → Roadmap → Talking points → FAQ → Footer.
 
-### Step 3 — Choose components
+Use diagrams, branches, cards, timelines and highlighted code where they carry the content.
 
-Read `references/components.md` and map the gathered content onto the best-fitting
-visuals, following the recommended flow for the chosen type:
+## 4. Assemble the HTML
 
-- **design**: Header → Lead/TL;DR → TOC → Context → Goals/Non-goals → Architecture
-  diagram → Sequence → Components → Data/constraints → Implementation steps →
-  Testing → Open questions/risks → Footer.
-- **stakeholder**: Header → Lead → Why it matters (value cards) → How it works
-  (friendly step flow) → What's needed (checklist) → In/out of scope → Roadmap →
-  Talking points → FAQ → Footer.
+Start from `references/template.html`. It shows the design language: the `<style>` block, the header and the section structure. The template and the component catalog are a starting point. Restructure the layout, rewrite the CSS, drop components and compose new ones when the content calls for it, within the invariants below.
 
-Use the full visual range: diagrams, branches, cards, timelines, token-colored code.
-The catalog is a starting point, not a ceiling — you may compose new layouts and add
-CSS (or inline JS) to the page when the content calls for it, as long as you build on
-the existing design tokens (palette, fonts, radius, shadow) and respect the
-invariants below.
+Fill `{{TITLE}}` and the header: the eyebrow label, the title, the subtitle, and meta badges for the status, today's date and, for design docs, the repo. Number each `<h2>` with `<span class="num">NN</span>`, and link the sections from the TOC in design docs.
 
-### Step 4 — Assemble the HTML
+Write to `docs/<kebab-topic>-<type>.html` in the current repo, for example `docs/payment-retries-design.html`.
 
-Start from `references/template.html`, but treat it as a **reference, not a fixed
-scaffold.** It exists to give you a consistent, on-brand starting point — it shows the
-design language (the `<style>` block, the header and section structure). You are free
-to change it heavily for the doc at hand: restructure the layout, rewrite or extend
-the CSS, drop components you don't need, and add entirely new ones. The template is a
-floor, not a ceiling; the only things to carry through every doc are the design tokens
-and the invariants below.
+## 5. Proofread
 
-Replace `{{TITLE}}`, fill the header (eyebrow label, title, subtitle, meta badges —
-include a status, the date `2026-06-03`, and a repo chip for design docs), build the
-body from the chosen component blocks, and write the footer. Number `<h2>` sections
-with `<span class="num">NN</span>` and (for design docs) link them from the TOC.
-
-Write to `docs/<kebab-topic>-<type>.html` in the current repo — e.g.
-`docs/payment-retries-design.html`. Create the `docs/` directory if it doesn't exist.
-
-### Step 5 — Proofread gate (required)
-
-**Open the rendered HTML for the user and have them proofread it** before treating
-the doc as done: tell them the path and offer to open it (`open docs/<file>.html` on
-macOS). Do **not** consider it final until they explicitly approve. Loop here: revise
-the HTML on their feedback — content, structure, or visuals — and re-open it until
-they sign off.
-
-### Step 6 — Report
-
-Once approved, confirm the final HTML path to the user.
+Open the file (`open docs/<file>.html` on macOS) and ask the user to proofread it. Revise on their feedback, then open it again. The doc is final only when they approve it. Then give the path.
 
 ## Invariants
 
-These keep the output on-brand and shareable — they do **not** cap the visuals.
-
-- A single `.html` file with all CSS in the `<style>` block.
-- Keep JavaScript to a minimum — prefer pure HTML/CSS, and reach for JS only when it
-  clearly earns its place (e.g. syntax highlighting). Offline use is not a requirement.
-- Keep external resources limited (no CDN fonts or linked stylesheets, and no
-  unconfirmed remote scripts) — a trusted library like `sugar-high` is fine.
-- Visual freedom is encouraged: add CSS, invent new layouts/components, and use a
-  little JS for richer or interactive visuals when the content benefits. The catalog
-  is a floor, not a ceiling.
-- Stay on-brand by reusing the design tokens (warm palette, serif/sans/mono, radius,
-  shadow) rather than introducing off-palette colors or fonts.
-- Color code with `https://cdn.jsdelivr.net/npm/sugar-high@1/lib/index.min.js`.
-- Design docs get a TOC and numbered sections; stakeholder docs stay jargon-free.
+- One `.html` file, with all CSS in the `<style>` block.
+- Reuse the design tokens: the warm palette, the serif, sans and mono fonts, the radius and the shadow. Add no off-palette color or font.
+- Use no CDN font, no linked stylesheet and no unknown remote script. Highlight code with `https://cdn.jsdelivr.net/npm/sugar-high@1/lib/index.min.js`.
+- Prefer HTML and CSS. Add JavaScript only for a visual that needs it.
+- Design docs get a TOC and numbered sections. Stakeholder docs stay free of jargon.
 
 ## References
 

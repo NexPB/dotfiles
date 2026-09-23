@@ -1,16 +1,16 @@
 ---
 name: pr-review-comments
-description: "Fetch unresolved review comments on a GitHub pull request and post a reply to each one analysing whether it should be addressed, with concrete steps when it should. Every reply is written in ASD-STE100 Simplified Technical English. Makes NO codebase changes. Use when asked to review PR comments, triage review feedback, or draft reply plans for PR threads."
+description: "Fetch unresolved review comments on a GitHub pull request and post a reply to each one analysing whether it should be addressed, with concrete steps when it should. Every reply is written in ASD-STE100 Simplified Technical English. Changes no code. Use when asked to review PR comments, triage review feedback, or draft reply plans for PR threads."
 user-invocable: true
 ---
 
 # Reviewing PR Comments
 
-Fetch unresolved review comments from a GitHub PR, analyse each one, and post a reply saying whether it should be addressed and — if so — the exact steps to do it.
+Fetch the unresolved review threads on a GitHub PR, analyse each one, and post a reply that says whether to address it and, if so, the exact steps.
 
-**Do not make any codebase changes.** This skill is purely analytical and communicative.
+Change no code. A separate agent or the author acts on the replies, so the replies are the only output.
 
-All text you post to GitHub, and the final summary you give the user, must obey the writing standard below.
+Write every reply and the final summary to the standard below.
 
 ## Writing standard: ASD-STE100
 
@@ -97,7 +97,7 @@ For each unresolved thread:
 2. **Decide whether the comment should be addressed** using the following heuristics:
    - **Yes** — the comment identifies a real bug, a missing validation, a security concern, a factual error, or a clear improvement that aligns with the project's conventions.
    - **No** — the comment is a question already answered by context, a style preference that conflicts with existing conventions, out of scope for this PR, or already fixed by another commit.
-3. **Draft a reply** using the format below, in ASD-STE100.
+3. **Draft a reply** in the format below. When the thread already holds a later comment, answer the latest one.
 
 #### Reply format
 
@@ -125,20 +125,8 @@ or, when the comment should **not** be addressed:
 or "The check at line N does this already.">
 ```
 
-Steps must be specific enough that a separate agent can implement them without reading any other
+Make the steps specific enough that a separate agent can do them without reading any other
 discussion.
-
-#### Check the reply before you post it
-
-Read the draft again and correct it against this list:
-
-- Each sentence has 20 words or fewer.
-- Each sentence gives one instruction.
-- Each instruction starts with a command verb.
-- No sentence uses the passive voice.
-- No sentence uses an `-ing` verb form.
-- The reply uses the same name for the same thing every time.
-- The reply has no jargon, no idioms, and no contractions.
 
 #### Examples
 
@@ -160,29 +148,22 @@ Good (ASD-STE100):
 
 ### Step 4: Post each reply
 
-Post the reply to the corresponding thread using the GitHub REST API. Write the reply body to a temporary file first to handle multi-line content safely:
+Post each reply through the GitHub REST API. Write the body to a file first, because a reply holds several lines and quote marks:
 
 ```bash
-# Write the reply to a temp file
-cat > /tmp/pr_reply.md << 'REPLY'
+BODY=$(mktemp)
+cat > "$BODY" << 'REPLY'
 <formatted reply text>
 REPLY
 
-# Post the reply using the first comment's database ID
 gh api \
   repos/{owner}/{repo}/pulls/<PR_NUMBER>/comments/<firstCommentDatabaseId>/replies \
   --method POST \
-  --field body=@/tmp/pr_reply.md
+  --field body=@"$BODY"
 ```
 
-Repeat for every unresolved thread.
+Reply to every unresolved thread before you report. Do not stop after a few threads to show the drafts: the user asked for the replies to be posted.
 
 ### Step 5: Report
 
-After posting all replies, summarise to the user in ASD-STE100:
-- How many threads were analysed
-- How many were marked **Yes** (should be addressed)
-- How many were marked **No**
-- List each thread (file + line) alongside its verdict in a short table
-
-Do not make any code edits.
+Give the counts first: the threads that you analysed, the **Yes** count and the **No** count. Then give a short table with the file, the line and the verdict of each thread.

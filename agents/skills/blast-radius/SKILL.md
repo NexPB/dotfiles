@@ -6,45 +6,41 @@ disable-model-invocation: true
 
 # Blast radius
 
-Find what a change breaks somewhere else, before it ships. Use for "blast radius of X", "what could this break", or reviewing a small diff you don't trust yet.
+Find what a change breaks somewhere else, before it ships.
 
-Companion to `how` and `why`. `how` tells you what the code does. `why` tells you why it's shaped that way. Blast radius tells you what it breaks somewhere else.
+Listing the callers is not the job: grep does that in a second. The job is the breakage grep does not show.
 
-Listing the callers is not the job. The agent can grep those in a second. The job is the breakage grep won't show you.
+## Prove, don't persuade
 
-## Don't trust your own writeup
+A writeup that sounds right reads the same whether or not it is true. So the deliverable is not the writeup. It is the one or two facts that the change's safety depends on, proven by running code.
 
-A blast-radius writeup that sounds right is worthless. It reads as convincing whether or not it's true, and that is the trap you are walking into. So don't hand back the writeup. Find the one or two facts the whole thing depends on and prove them by running code. Words are where you start, not what you ship.
+For each such fact, get it as far down this ladder as is cheap, and say where it stopped:
 
-### How sure are you
-
-For each fact the change's safety depends on, get it as far down this list as is cheap, and say where it stopped.
-
-1. You said so. Worthless on its own.
-2. You pointed at the line. A real `file:line`, or the library's own source.
-3. You showed the bad case can't happen. You walked the failure step by step and it doesn't reach.
-4. You ran it. A script or test that calls the real code and fails loud if you're wrong.
+1. You said so. Worth nothing on its own.
+2. You pointed at the line: a real `file:line`, or the library's own source.
+3. You walked the failure step by step and showed it does not reach.
+4. You ran it: a script or test that calls the real code and fails loudly if you are wrong.
 5. You reproduced it in the running app.
 
-Any safety fact you can't get to step 4, say so out loud. Don't write it up as settled. Step 4 is usually one small script that imports the same library the app ships and calls the exact function you're worried about.
+Mark any safety fact below step 4 as unproven. Step 4 is usually one small script that imports the library version the app ships and calls the exact function in question.
 
 ## Steps
 
-1. Read the change. The diff, the symbols it adds, changes, and deletes, and what it now does differently, including the part the diff doesn't spell out. Use `why` step 2 to pull the PR and commits.
-2. Find the one fact it's safe because of. Most changes that look scary are safe because of a single fact, like "this call only drops already-dead cache entries and does nothing else". Find that fact. If it holds, most of the scary cases die at once. Spend your time here, not on a long list of maybes.
-3. Look where grep stops. Read the source of the library you call, and check its pinned version and any local patch. Work out when things run: microtasks, unmount and teardown, Solid versus React. Follow what a symbol search misses: the JSON an API returns, a DB column, a wire format, another language reading the same bytes, a feature flag, code three hops downstream.
-4. Be honest about each risk. Give it a real chance of happening and a real cost if it does. Keep the risks you confirmed; list the ones you checked and cleared separately. Same rules as `why`. Cite a real `file:line`, a search that finds nothing is still an answer, and never make up a caller or an API.
-5. Prove the one fact. Write a script or test that runs the real code, run it, and paste what happened. If you can't prove it cheaply, mark it unproven. Don't round up.
-6. For a big or wide change, run it as an `arena`. Ask several models the same question and merge the answers. Different models catch different real bugs.
+1. **Read the change.** The diff, the symbols it adds, changes and deletes, and what now behaves differently, including what the diff does not spell out. Pull the PR description and the commit messages with `gh pr view` and `git log` for the intent.
+2. **Find the one fact it is safe because of.** Most scary-looking changes are safe because of one fact, like "this call only drops cache entries that are already dead". If that fact holds, most of the scary cases fall at once. Spend the time here, not on a long list of maybes.
+3. **Look where grep stops.** Read the source of the library you call, at its pinned version, with any local patch. Work out when things run: microtasks, unmount and teardown, Solid versus React. Follow what a symbol search misses: the JSON an API returns, a DB column, a wire format, another language that reads the same bytes, a feature flag, code three hops downstream.
+4. **Rate each risk.** Give it a real chance and a real cost. Keep the confirmed risks apart from the ones you checked and cleared. Cite a real `file:line` for each; a search that finds nothing is an answer too. Never invent a caller or an API.
+5. **Prove the one fact.** Write the script or test, run it, and paste what it printed.
+6. **For a wide change,** ask the same question of two or three subagents on different models (the Agent `model` override) and merge what they find. Different models catch different real bugs.
 
 ## What to hand back
 
-- **What it does.** What changed, including the part that isn't obvious.
-- **The one fact it's safe because of.** State it, say which step you got it to, and show the proof. If you couldn't prove it, write unproven.
-- **Risks.** Only the real ones. Each names how it breaks, the `file:line`, how likely and how bad, and how to check. Paste the proof for the ones that matter.
-- **Cleared.** What you checked and why it's fine.
+Lead with the verdict: safe, safe if the one fact holds, or not safe.
+
+- **What it does.** What changed, including the part that is not obvious.
+- **The one fact it is safe because of.** The fact, the ladder step it reached, and the proof, or "unproven".
+- **Risks.** Each names how it breaks, the `file:line`, how likely and how bad, and how to check. Paste the proof for the ones that matter.
+- **Cleared.** What you checked, and why it is fine.
 - **Before you merge.** The cheapest test or repro that catches the real bug, including the script you wrote.
 
-Write it through `unslop`, cite real code, and strip anything private before it goes anywhere public.
-
-**Reply:** the writeup above, with the one safety fact either proven or marked unproven.
+Cite real code. Strip anything private before the writeup goes anywhere public.
