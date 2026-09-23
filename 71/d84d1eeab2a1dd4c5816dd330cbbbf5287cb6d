@@ -1,0 +1,41 @@
+agents/skills/elixir-ecto-explain-query/SKILL.md
+  s_85c52870f0c53a::t_92ed8a9f42bce6 3,7,9,13-23,25,28,30,33,41-42,45,47-48
+agents/skills/pr-review-comments/SKILL.md
+  s_85c52870f0c53a::t_3ece14f90c9244 100
+  s_85c52870f0c53a::t_9795e2c9ff2214 151,154-155,162,165
+  s_85c52870f0c53a::t_67764a19ecdf88 128
+  s_85c52870f0c53a::t_22d634738e97d7 169
+  s_85c52870f0c53a::t_1c98b05a4dc80b 3
+  s_85c52870f0c53a::t_a9d11c84ce57f8 9,11,13
+agents/skills/html-doc/SKILL.md
+  s_85c52870f0c53a::t_da420624c3c1f8 10,12,14-15,17,19,21,23,25,27,29,31,33-34,36,38,40,42,44,46,48,52-56
+agents/skills/build/SKILL.md
+  s_85c52870f0c53a::t_b5f19844930c13 57
+agents/skills/simplify-docs/SKILL.md
+  s_85c52870f0c53a::t_68d66ac19a67f3 16
+  s_85c52870f0c53a::t_c4e2f70950e0fc 145
+  s_85c52870f0c53a::t_77149581ab7d4a 134,136-137,139
+agents/skills/blast-radius/SKILL.md
+  s_85c52870f0c53a::t_4a9579db636985 9,11,13,15,17,19-22,25,29-34,38,40-44,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "71d84d1eeab2a1dd4c5816dd330cbbbf5287cb6d",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_85c52870f0c53a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7be92408-e833-454c-8c8c-ebe7e3301054",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
