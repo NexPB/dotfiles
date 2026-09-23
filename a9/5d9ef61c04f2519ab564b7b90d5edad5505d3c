@@ -1,0 +1,14 @@
+agents/claude-settings.json
+  h_8c8bb3a0db3180 3-5,64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a95d9ef61c04f2519ab564b7b90d5edad5505d3c",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
