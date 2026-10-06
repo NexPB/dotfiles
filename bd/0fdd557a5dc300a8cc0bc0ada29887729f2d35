@@ -1,0 +1,24 @@
+agents/skills/pr-review-comments/SKILL.md
+  s_225d909174508f::t_0c3e2872af3c47 3-4,10-11,13-17,19-22,78,86-99,101,114,116-117,119-125,127,174-210,212-213,227-228,230,232-234
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bd0fdd557a5dc300a8cc0bc0ada29887729f2d35",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_225d909174508f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f562bdc0-2c97-46af-9d1f-66987e3fdc3d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
