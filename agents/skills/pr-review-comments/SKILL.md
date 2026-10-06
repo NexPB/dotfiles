@@ -1,16 +1,25 @@
 ---
 name: pr-review-comments
-description: "Fetch unresolved review comments on a GitHub pull request and post a reply to each one analysing whether it should be addressed, with concrete steps when it should. Every reply is written in ASD-STE100 Simplified Technical English. Changes no code. Use when asked to review PR comments, triage review feedback, or draft reply plans for PR threads."
+description: "Fetch unresolved review comments on a GitHub pull request, decide for each one whether it should be addressed, then discuss the verdicts, post replies, or fix the code, in any order. Every reply is written in ASD-STE100 Simplified Technical English. Use when asked to review PR comments, triage review feedback, draft or post replies to PR threads, or address review comments in code."
+argument-hint: "[PR number] [discuss | post | fix] [thread numbers]"
 user-invocable: true
 ---
 
 # Reviewing PR Comments
 
-Fetch the unresolved review threads on a GitHub PR, analyse each one, and post a reply that says whether to address it and, if so, the exact steps.
+Fetch the unresolved review threads on a GitHub PR and triage each one. Then do one of three
+actions on the triage:
 
-Change no code. A separate agent or the author acts on the replies, so the replies are the only output.
+| Action | Does | Changes |
+| --- | --- | --- |
+| `discuss` | Shows the verdicts and the draft replies in the chat, then stops. | Nothing |
+| `post` | Posts a reply to each selected thread. | GitHub only |
+| `fix` | Changes the code for each selected thread. Does not commit. | The working tree only |
 
-Write every reply and the final summary to the standard below.
+The user chains actions across turns, for example `discuss` → `fix 2 4` → `post`. Every action
+works on the same numbered triage.
+
+Write every reply and every draft to the standard below. Talk to the user in plain prose.
 
 ## Writing standard: ASD-STE100
 
@@ -66,7 +75,7 @@ that matter for review replies:
 
 ## Workflow
 
-### Step 1: Identify the PR
+### Step 1: Identify the PR, the action, and the threads
 
 Determine the PR number from:
 1. The user's message (e.g., "review comments on PR #10")
@@ -74,9 +83,22 @@ Determine the PR number from:
 
 If neither works, ask the user which PR to address.
 
-### Step 2: Fetch unresolved review comments
+Determine the action from the user's words:
 
-Run the script to get all unresolved (pending) review threads, including the IDs needed to post replies:
+- `discuss`: "evaluate", "triage", "what do you think", "let's go through them", or no action named.
+- `post`: "reply", "post", "answer the comments".
+- `fix`: "address", "fix", "apply", "do it".
+
+Determine the threads from the numbers in the triage table ("fix 2 and 4"). With no numbers,
+`post` selects every thread and `fix` selects every thread with the verdict **Yes**.
+
+### Step 2: Triage
+
+Reuse the triage from earlier in this conversation when one exists. The verdicts and drafts that
+the user changed in the discussion replace the original ones. Fetch again only when no triage
+exists or the user asks to refresh it.
+
+To triage, run the script to get all unresolved review threads, with the IDs needed to post replies:
 
 ```bash
 bash ~/.claude/skills/pr-review-comments/scripts/fetch-comments.sh <PR_NUMBER>
@@ -89,17 +111,20 @@ This outputs JSON with each unresolved thread:
 - `outdated` — whether the thread is on an outdated diff
 - `comments` — list of `{author, body, createdAt}` objects (the conversation so far)
 
-### Step 3: For each thread, read context and form a reply
+Number the threads from 1 in the order that the script returns them. For each thread:
 
-For each unresolved thread:
-
-1. **Read the referenced file** at `path` around the commented line to understand surrounding context. Skip this step for outdated threads where the path context is no longer relevant.
+1. **Read the referenced file** at `path` around the commented line to understand surrounding
+   context. Skip this step for outdated threads where the path context is no longer relevant.
 2. **Decide whether the comment should be addressed** using the following heuristics:
-   - **Yes** — the comment identifies a real bug, a missing validation, a security concern, a factual error, or a clear improvement that aligns with the project's conventions.
-   - **No** — the comment is a question already answered by context, a style preference that conflicts with existing conventions, out of scope for this PR, or already fixed by another commit.
-3. **Draft a reply** in the format below. When the thread already holds a later comment, answer the latest one.
+   - **Yes** — the comment identifies a real bug, a missing validation, a security concern, a
+     factual error, or a clear improvement that aligns with the project's conventions.
+   - **No** — the comment is a question already answered by context, a style preference that
+     conflicts with existing conventions, out of scope for this PR, or already fixed by another
+     commit.
+3. **Draft a reply** in the plan format below. When the thread already holds a later comment,
+   answer the latest one.
 
-#### Reply format
+#### Plan reply format
 
 ```markdown
 **Should be addressed: Yes** ✅
@@ -146,9 +171,46 @@ Good (ASD-STE100):
 >    - Move the call to `authenticate()` above the call to `cache.get()`.
 >    - Return a 401 response when `authenticate()` fails.
 
-### Step 4: Post each reply
+### Step 3: Do the action
 
-Post each reply through the GitHub REST API. Write the body to a file first, because a reply holds several lines and quote marks:
+#### `discuss`
+
+Show a table with the number, the file, the line, the reviewer, and the verdict of each thread.
+Under the table, show each thread: a one-line quote of the latest comment, then the draft reply.
+
+Stop there. Post nothing and change no code. When the user disagrees with a verdict, give your
+reasons once, then take the user's decision and rewrite the draft to match it.
+
+#### `fix`
+
+For each selected thread:
+
+1. Do the steps from the plan reply. Keep each change to the scope of its thread.
+2. When a **No** thread is selected, ask the user what to change before you change anything.
+3. When the code shows that the plan is wrong, stop work on that thread and tell the user.
+
+Run the formatter and the tests that cover the changed files when the project has them. Do not
+commit and do not post: the user decides when to do each. Report the threads that you fixed and
+the files that you changed.
+
+#### `post`
+
+For each selected thread, choose the reply:
+
+- The thread was fixed in this conversation, and the fix is on the remote branch: use the fixed
+  reply format below.
+- The thread was fixed, but the fix is not on the remote branch: tell the user and offer to
+  commit and push first. Do not post a fixed reply for code that the reviewer cannot see.
+- The thread was not fixed: use the plan reply.
+
+```markdown
+**Addressed** ✅ in <short commit SHA>
+
+<One or two sentences that tell what changed.>
+```
+
+Post each reply through the GitHub REST API. Write the body to a file first, because a reply
+holds several lines and quote marks:
 
 ```bash
 BODY=$(mktemp)
@@ -162,8 +224,11 @@ gh api \
   --field body=@"$BODY"
 ```
 
-Reply to every unresolved thread before you report. Do not stop after a few threads to show the drafts: the user asked for the replies to be posted.
+Reply to every selected thread before you report. Do not stop after a few threads to show the
+drafts: the user asked for the replies to be posted.
 
-### Step 5: Report
+### Step 4: Report
 
-Give the counts first: the threads that you analysed, the **Yes** count and the **No** count. Then give a short table with the file, the line and the verdict of each thread.
+After `post` or `fix`, give the counts first: the threads that you acted on, the **Yes** count and
+the **No** count. Then give a short table with the number, the file, the line, the verdict, and
+what you did on each thread (posted, fixed, skipped).
