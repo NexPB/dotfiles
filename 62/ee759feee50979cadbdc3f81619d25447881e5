@@ -1,0 +1,15 @@
+agents/claude-settings.json
+  h_8c8bb3a0db3180 3,12-13,15-16,22,24,26-27,34-35,37-38,42,46-48,51,68-69,76-80
+  h_8c8bb3a0db3180 52-67,81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "62ee759feee50979cadbdc3f81619d25447881e5",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
