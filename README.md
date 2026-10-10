@@ -38,19 +38,21 @@ a new copy and cannot delta-compress it.
 
 To turn the hook off, set `COMMENT_GUARD=off`. See [FLAGS.md](FLAGS.md).
 
-## verify
+## verify-admin-ui
 
-A Playwright check for the embedded Shopify apps, linked to `~/.claude/bin/verify`. In an app with a
-`verify.config.json`, `verify run` loads each listed page against the running dev server and fails on
-JS and console errors, failed requests, undefined `<s-*>` web components, and any pixel of difference
-from the committed screenshot baselines in `.verify/baseline/`. App Bridge is stubbed.
+A Playwright check for the embedded admin UI of the Shopify apps (Phoenix, Inertia, Polaris web
+components), linked to `~/.claude/bin/verify-admin-ui` and run with Bun. In an app with a
+`.verify/admin-ui.json`, `verify-admin-ui run` loads each listed page through the standalone admin
+view against the running Phoenix server and fails on JS and console errors, failed requests, Phoenix
+error pages, undefined `<s-*>` web components, and any pixel of difference from the committed
+baselines in `.verify/admin-ui/baseline/`. App Bridge is stubbed.
 
-The `Stop` hook `verify gate` blocks Claude from finishing while watched files have uncommitted
-changes that no passing run covers. It does nothing in a project without `verify.config.json`. The
-`verify` skill teaches the loop and the setup. To turn the hook off, set `VERIFY_GATE=off`. See
-[FLAGS.md](FLAGS.md).
+The `Stop` hook `verify-admin-ui gate` blocks Claude from finishing while `assets/` or `lib/*_web`
+have uncommitted changes that no passing run covers. It does nothing in a project without
+`.verify/admin-ui.json`. The `verify-admin-ui` skill teaches the loop and the setup. To turn the hook
+off, set `VERIFY_ADMIN_UI_GATE=off`. See [FLAGS.md](FLAGS.md).
 
-`./install` runs `npm ci` in `agents/verify` and installs Playwright's Chromium.
+`./install` runs `bun install` in `agents/verify-admin-ui` and installs Playwright's Chromium.
 
 ## Dev tools (managed by [mise](https://mise.jdx.dev))
 
@@ -58,3 +60,4 @@ Declared in `mise/config.toml`, symlinked to `~/.config/mise/config.toml`. Run `
 
 - [ripgrep](https://github.com/BurntSushi/ripgrep) - Fast recursive grep.
 - [fd](https://github.com/sharkdp/fd) - User-friendly alternative to `find`.
+- [Bun](https://bun.sh) - Runtime for the CLIs in `agents/`.

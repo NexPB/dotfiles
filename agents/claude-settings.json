@@ -42,7 +42,7 @@
       {
         "hooks": [
           {
-            "command": "~/.claude/bin/verify gate",
+            "command": "~/.claude/bin/verify-admin-ui gate",
             "timeout": 10,
             "type": "command"
           }
