@@ -38,6 +38,20 @@ a new copy and cannot delta-compress it.
 
 To turn the hook off, set `COMMENT_GUARD=off`. See [FLAGS.md](FLAGS.md).
 
+## verify
+
+A Playwright check for the embedded Shopify apps, linked to `~/.claude/bin/verify`. In an app with a
+`verify.config.json`, `verify run` loads each listed page against the running dev server and fails on
+JS and console errors, failed requests, undefined `<s-*>` web components, and any pixel of difference
+from the committed screenshot baselines in `.verify/baseline/`. App Bridge is stubbed.
+
+The `Stop` hook `verify gate` blocks Claude from finishing while watched files have uncommitted
+changes that no passing run covers. It does nothing in a project without `verify.config.json`. The
+`verify` skill teaches the loop and the setup. To turn the hook off, set `VERIFY_GATE=off`. See
+[FLAGS.md](FLAGS.md).
+
+`./install` runs `npm ci` in `agents/verify` and installs Playwright's Chromium.
+
 ## Dev tools (managed by [mise](https://mise.jdx.dev))
 
 Declared in `mise/config.toml`, symlinked to `~/.config/mise/config.toml`. Run `./install` (which calls `mise install`) to sync.

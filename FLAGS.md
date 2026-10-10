@@ -29,3 +29,12 @@ Controls the [comment-guard](README.md#comment-guard-experimental) hook.
 | Unset, or any other value | The hook runs. |
 
 The hook reads the variable on each call, so a change applies to the next edit.
+
+## VERIFY_GATE
+
+Controls the [verify](README.md#verify) `Stop` hook.
+
+| Value | Effect |
+| --- | --- |
+| `off` | The hook lets every stop through. |
+| Unset, or any other value | The hook blocks a stop while watched files have uncommitted changes and no passing `verify run` matches them. |

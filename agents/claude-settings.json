@@ -37,6 +37,17 @@
         ],
         "matcher": "*"
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/bin/verify gate",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
     ]
   },
   "model": "opus[1m]",
