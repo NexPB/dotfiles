@@ -17,7 +17,6 @@
     ~/.claude/bin/comment-guard:
         path: agents/bin/comment-guard-2f934a0
         relink: true
-    ~/.claude/bin/verify-admin-ui: agents/verify-admin-ui/bin/verify-admin-ui.ts
     ~/.claude/skills/ask: agents/skills/ask
     ~/.claude/skills/blast-radius: agents/skills/blast-radius
     ~/.claude/skills/build: agents/skills/build
@@ -28,7 +27,7 @@
     ~/.claude/skills/prompt-analysis: agents/skills/prompt-analysis
     ~/.claude/skills/pr-review-comments: agents/skills/pr-review-comments
     ~/.claude/skills/simplify-docs: agents/skills/simplify-docs
-    ~/.claude/skills/verify-admin-ui: agents/skills/verify-admin-ui
+    ~/.claude/skills/verify: agents/plugins/verify
     ~/.claude/skills/whut: agents/skills/whut
     ~/.vscode/extensions/duvel-theme: vscode/duvel
 - shell:
@@ -38,7 +37,7 @@
       description: Installing mise-managed tools
       stderr: true
       stdout: true
-    - command: 'if command -v bun >/dev/null 2>&1; then cd agents/verify-admin-ui && bun install --frozen-lockfile && bun x playwright install chromium; else echo "warning: bun not found on PATH, skipping verify-admin-ui install"; fi'
-      description: Installing verify-admin-ui (Playwright + Chromium)
+    - command: 'if command -v bun >/dev/null 2>&1; then cd agents/plugins/verify && bun install --frozen-lockfile && bun x playwright install chromium; else echo "warning: bun not found on PATH, skipping verify install"; fi'
+      description: Installing the verify plugin (Playwright + Chromium)
       stdout: true
       stderr: true

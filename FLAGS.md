@@ -30,11 +30,11 @@ Controls the [comment-guard](README.md#comment-guard-experimental) hook.
 
 The hook reads the variable on each call, so a change applies to the next edit.
 
-## VERIFY_ADMIN_UI_GATE
+## VERIFY_GATE
 
-Controls the [verify-admin-ui](README.md#verify-admin-ui) `Stop` hook.
+Controls the Stop hook of the [verify](README.md#verify-plugin) plugin.
 
 | Value | Effect |
 | --- | --- |
 | `off` | The hook lets every stop through. |
-| Unset, or any other value | The hook blocks a stop while watched files have uncommitted changes and no passing `verify-admin-ui run` matches them. |
+| Unset, or any other value | The hook blocks a stop while a verify tool's watched files have uncommitted changes and no passing run matches them. |

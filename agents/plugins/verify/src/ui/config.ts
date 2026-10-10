@@ -1,8 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-
-export const NAME = "verify-admin-ui";
-export const CONFIG_FILE = ".verify/admin-ui.json";
+import type { UiTool } from "./tool.ts";
 
 export type Page = {
   name: string;
@@ -17,44 +15,50 @@ export type Config = {
   loginPath: string;
   viewport: { width: number; height: number };
   watch: string[];
-  appBridgeStub: boolean;
   maxDiffPixels: number;
   pages: Page[];
 };
 
-export const DEFAULTS: Config = {
-  baseUrl: "http://localhost:4000",
+const BASE: Config = {
+  baseUrl: "http://localhost:3000",
   loginPath: "/",
   viewport: { width: 1280, height: 900 },
-  // Git pathspecs: `*` crosses `/`, so `lib/*_web/*` is the whole web layer and nothing else in lib.
-  watch: ["assets/js", "assets/css", "lib/*_web/*", "lib/*_web.ex"],
-  appBridgeStub: true,
+  watch: [],
   maxDiffPixels: 0,
   pages: [],
 };
 
-/** Walks up from `start` to the nearest directory holding .verify/admin-ui.json; null when there is none. */
-export function findRoot(start: string): string | null {
+/** The tool's config file, relative to the app root. */
+export const configFile = (tool: UiTool) => `.verify/${tool.name}.json`;
+
+/** Walks up from `start` to the nearest directory holding the tool's config; null when there is none. */
+export function findRoot(tool: UiTool, start: string): string | null {
   let dir = start;
   while (true) {
-    if (existsSync(join(dir, CONFIG_FILE))) return dir;
+    if (existsSync(join(dir, configFile(tool)))) return dir;
     const parent = dirname(dir);
     if (parent === dir) return null;
     dir = parent;
   }
 }
 
-export function loadConfig(root: string): Config {
-  const raw = JSON.parse(readFileSync(join(root, CONFIG_FILE), "utf8"));
-  const config: Config = { ...DEFAULTS, ...raw, viewport: { ...DEFAULTS.viewport, ...raw.viewport } };
+/** The config `init` writes: base values overlaid with the tool's defaults. */
+export function starterConfig(tool: UiTool): Config {
+  return { ...BASE, ...tool.defaults, pages: [{ name: "home", path: "/" }] };
+}
+
+export function loadConfig(tool: UiTool, root: string): Config {
+  const raw = JSON.parse(readFileSync(join(root, configFile(tool)), "utf8"));
+  const defaults = { ...BASE, ...tool.defaults };
+  const config: Config = { ...defaults, ...raw, viewport: { ...defaults.viewport, ...raw.viewport } };
   for (const page of config.pages) {
     if (!page.name || !page.path) throw new Error(`each page needs "name" and "path": ${JSON.stringify(page)}`);
   }
   return config;
 }
 
-export const paths = (root: string) => {
-  const dir = join(root, ".verify", "admin-ui");
+export function paths(tool: UiTool, root: string) {
+  const dir = join(root, ".verify", tool.name);
   return {
     dir,
     auth: join(dir, "auth.json"),
@@ -62,7 +66,7 @@ export const paths = (root: string) => {
     baseline: join(dir, "baseline"),
     out: join(dir, "out"),
   };
-};
+}
 
 function git(root: string, args: string[]): string {
   const proc = Bun.spawnSync(["git", ...args], { cwd: root, stderr: "pipe" });
@@ -70,15 +74,13 @@ function git(root: string, args: string[]): string {
   return proc.stdout.toString();
 }
 
-function watchedFiles(root: string, config: Config): string[] {
-  const out = git(root, ["ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", CONFIG_FILE, ...config.watch]);
-  return [...new Set(out.split("\0").filter(Boolean))].sort();
-}
+const watchSpecs = (tool: UiTool, config: Config) => ["--", configFile(tool), ...config.watch];
 
 /** sha256 over the path and content of every watched file, committed or not. */
-export function treeHash(root: string, config: Config): string {
+export function treeHash(tool: UiTool, root: string, config: Config): string {
+  const out = git(root, ["ls-files", "-z", "--cached", "--others", "--exclude-standard", ...watchSpecs(tool, config)]);
   const hash = new Bun.CryptoHasher("sha256");
-  for (const file of watchedFiles(root, config)) {
+  for (const file of [...new Set(out.split("\0").filter(Boolean))].sort()) {
     const full = join(root, file);
     hash.update(file).update("\0");
     // ls-files --cached still lists a tracked file deleted from the working tree.
@@ -89,6 +91,6 @@ export function treeHash(root: string, config: Config): string {
 }
 
 /** True when a watched path differs from HEAD or is untracked. */
-export function hasUncommittedChanges(root: string, config: Config): boolean {
-  return git(root, ["status", "--porcelain", "--", CONFIG_FILE, ...config.watch]).trim() !== "";
+export function hasUncommittedChanges(tool: UiTool, root: string, config: Config): boolean {
+  return git(root, ["status", "--porcelain", ...watchSpecs(tool, config)]).trim() !== "";
 }

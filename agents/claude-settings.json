@@ -37,17 +37,6 @@
         ],
         "matcher": "*"
       }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/bin/verify-admin-ui gate",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      }
     ]
   },
   "model": "opus[1m]",

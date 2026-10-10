@@ -38,21 +38,25 @@ a new copy and cannot delta-compress it.
 
 To turn the hook off, set `COMMENT_GUARD=off`. See [FLAGS.md](FLAGS.md).
 
-## verify-admin-ui
+## verify plugin
 
-A Playwright check for the embedded admin UI of the Shopify apps (Phoenix, Inertia, Polaris web
-components), linked to `~/.claude/bin/verify-admin-ui` and run with Bun. In an app with a
-`.verify/admin-ui.json`, `verify-admin-ui run` loads each listed page through the standalone admin
-view against the running Phoenix server and fails on JS and console errors, failed requests, Phoenix
-error pages, undefined `<s-*>` web components, and any pixel of difference from the committed
-baselines in `.verify/admin-ui/baseline/`. App Bridge is stubbed.
+A Claude Code plugin at `agents/plugins/verify`, linked to `~/.claude/skills/verify`, which loads it in
+place. Each skill verifies one surface and runs as `/verify:<surface>`. The plugin puts the Bun CLI
+`bin/verify` on the Bash tool's `PATH` (`verify <surface> run`) and ships a `Stop` hook that blocks
+Claude from finishing while a surface's watched files have uncommitted changes that no passing run
+covers. The hook does nothing in a project without a `.verify/<surface>.json`. To turn it off, set
+`VERIFY_GATE=off`. See [FLAGS.md](FLAGS.md).
 
-The `Stop` hook `verify-admin-ui gate` blocks Claude from finishing while `assets/` or `lib/*_web`
-have uncommitted changes that no passing run covers. It does nothing in a project without
-`.verify/admin-ui.json`. The `verify-admin-ui` skill teaches the loop and the setup. To turn the hook
-off, set `VERIFY_ADMIN_UI_GATE=off`. See [FLAGS.md](FLAGS.md).
+| Skill | Checks |
+| --- | --- |
+| `verify:shopify-app-ui` | The embedded admin UI of a Shopify app on Phoenix and Inertia, through its standalone view: JS and console errors, failed requests, Phoenix error pages, Inertia protocol errors, undefined `<s-*>` web components, and pixel diffs against committed baselines. App Bridge is stubbed. |
 
-`./install` runs `bun install` in `agents/verify-admin-ui` and installs Playwright's Chromium.
+A UI surface is a `UiTool` in `src/tools/`: a name, config defaults, and a list of checks. The generic
+checks live in `src/ui/checks.ts`, stack checks in `src/stacks/` (Phoenix, Inertia), and Shopify ones in
+`src/shopify/`. A new UI surface lists the checks it needs, registers in `src/tools/index.ts`, and adds
+`skills/<surface>/SKILL.md`.
+
+`./install` runs `bun install` in the plugin and installs Playwright's Chromium.
 
 ## Dev tools (managed by [mise](https://mise.jdx.dev))
 

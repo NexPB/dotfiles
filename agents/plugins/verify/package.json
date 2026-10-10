@@ -1,9 +1,9 @@
 {
-  "name": "verify-admin-ui",
+  "name": "verify",
   "private": true,
   "type": "module",
   "bin": {
-    "verify-admin-ui": "bin/verify-admin-ui.ts"
+    "verify": "bin/verify"
   },
   "scripts": {
     "check": "tsc --noEmit"

@@ -1,13 +1,13 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import pixelmatch from "pixelmatch";
-import type { Browser, Page as Tab } from "playwright";
+import type { Browser } from "playwright";
 import { PNG } from "pngjs";
-import { NAME, paths, treeHash, type Config, type Page } from "./project.ts";
+import { firstLine } from "./checks.ts";
+import { configFile, paths, treeHash, type Config, type Page } from "./config.ts";
+import type { PageRun, UiTool } from "./tool.ts";
 
-const STUB = join(import.meta.dir, "bridge-stub.js");
 const CONCURRENCY = 4;
-const UPGRADE_TIMEOUT_MS = 5000;
 const MAX_LINES_PER_PAGE = 6;
 
 type Visual =
@@ -15,24 +15,18 @@ type Visual =
   | { visual: "size"; size: string; baselineSize: string }
   | { visual: "diff"; diffPixels: number; diff: string };
 
-type PageResult = Visual & {
-  name: string;
-  path: string;
-  issues: string[];
-  shot: string;
-  bridgeCalls: { call: string; args: unknown[] }[];
-};
+type PageResult = Visual & { name: string; path: string; issues: string[]; notes: string[]; shot: string };
 
 type Report = { treeHash: string; complete: boolean; pages: PageResult[] };
 
-export async function run(root: string, config: Config, only: string[]): Promise<number> {
-  const p = paths(root);
+export async function run(tool: UiTool, root: string, config: Config, only: string[]): Promise<number> {
+  const p = paths(tool, root);
   const unknown = only.filter((name) => !config.pages.some((page) => page.name === name));
   if (unknown.length) throw new Error(`unknown page: ${unknown.join(", ")}`);
   const pages = only.length ? config.pages.filter((page) => only.includes(page.name)) : config.pages;
-  if (!pages.length) throw new Error(`no pages in .verify/admin-ui.json`);
+  if (!pages.length) throw new Error(`no pages in ${configFile(tool)}`);
 
-  const hash = treeHash(root, config);
+  const hash = treeHash(tool, root, config);
   rmSync(p.stamp, { force: true });
   mkdirSync(p.out, { recursive: true });
   mkdirSync(p.baseline, { recursive: true });
@@ -43,7 +37,7 @@ export async function run(root: string, config: Config, only: string[]): Promise
   try {
     const queue = [...pages];
     const worker = async () => {
-      for (let page; (page = queue.shift()); ) results.push(await checkPage(browser, root, config, page));
+      for (let page; (page = queue.shift()); ) results.push(await checkPage(tool, browser, root, config, page));
     };
     await Promise.all(Array.from({ length: Math.min(CONCURRENCY, pages.length) }, worker));
   } finally {
@@ -54,12 +48,12 @@ export async function run(root: string, config: Config, only: string[]): Promise
 
   const report: Report = { treeHash: hash, complete: !only.length, pages: results };
   writeFileSync(join(p.out, "report.json"), JSON.stringify(report, null, 2));
-  return finish(root, config, report);
+  return finish(tool, root, config, report);
 }
 
 /** Prints the report and writes the pass stamp when it is complete, green, and the tree is unchanged. */
-function finish(root: string, config: Config, report: Report): number {
-  const p = paths(root);
+function finish(tool: UiTool, root: string, config: Config, report: Report): number {
+  const p = paths(tool, root);
   const rel = (file: string) => relative(root, file);
   const failed = report.pages.filter((r) => r.issues.length || r.visual !== "match");
 
@@ -67,16 +61,16 @@ function finish(root: string, config: Config, report: Report): number {
     const ok = !r.issues.length && r.visual === "match";
     console.log(`${ok ? "✓" : "✗"} ${r.name} ${r.path}`);
     const lines = [...r.issues];
-    if (r.visual === "new") lines.push(`no baseline: look at ${rel(r.shot)}, then \`${NAME} approve ${r.name}\``);
+    if (r.visual === "new") lines.push(`no baseline: look at ${rel(r.shot)}, then \`verify ${tool.name} approve ${r.name}\``);
     if (r.visual === "diff") lines.push(`${r.diffPixels} pixels differ from baseline: ${rel(r.diff)}`);
     if (r.visual === "size") lines.push(`size ${r.size} differs from baseline ${r.baselineSize}: ${rel(r.shot)}`);
     for (const line of lines.slice(0, MAX_LINES_PER_PAGE)) console.log(`    ${line}`);
     if (lines.length > MAX_LINES_PER_PAGE) console.log(`    … ${lines.length - MAX_LINES_PER_PAGE} more in ${rel(join(p.out, "report.json"))}`);
-    if (r.bridgeCalls.length) console.log(`    app bridge: ${r.bridgeCalls.map((c) => c.call).join(", ")}`);
+    for (const note of r.notes) console.log(`    ${note}`);
   }
 
   const passed = !failed.length;
-  if (passed && report.complete && report.treeHash === treeHash(root, config)) {
+  if (passed && report.complete && report.treeHash === treeHash(tool, root, config)) {
     writeFileSync(p.stamp, report.treeHash + "\n");
     console.log(`\npass: ${report.pages.length} pages`);
   } else if (passed) {
@@ -87,68 +81,37 @@ function finish(root: string, config: Config, report: Report): number {
   return passed ? 0 : 1;
 }
 
-const firstLine = (err: unknown) => (err instanceof Error ? err.message : String(err)).split("\n")[0];
-
-async function checkPage(browser: Browser, root: string, config: Config, page: Page): Promise<PageResult> {
-  const p = paths(root);
+async function checkPage(tool: UiTool, browser: Browser, root: string, config: Config, page: Page): Promise<PageResult> {
+  const p = paths(tool, root);
   const issues: string[] = [];
-  const pending: Promise<unknown>[] = [];
+  const deferred: Promise<unknown>[] = [];
+  const hasAuth = existsSync(p.auth);
+  const ctx: PageRun = {
+    config,
+    page,
+    url: new URL(page.path, config.baseUrl),
+    hasAuth,
+    fail: (issue) => issues.push(issue),
+    defer: (work) => deferred.push(work),
+  };
+
   const context = await browser.newContext({
     viewport: config.viewport,
     deviceScaleFactor: 1,
     reducedMotion: "reduce",
-    storageState: existsSync(p.auth) ? p.auth : undefined,
+    storageState: hasAuth ? p.auth : undefined,
   });
-  if (config.appBridgeStub) {
-    await context.addInitScript({ path: STUB });
-    await context.route(/cdn\.shopify\.com\/shopifycloud\/app-bridge\.js/, (route) =>
-      route.fulfill({ status: 200, contentType: "text/javascript", body: "" }),
-    );
-  }
-
+  for (const check of tool.checks) await check.setup?.(context, ctx);
   const tab = await context.newPage();
-  const origin = new URL(config.baseUrl).origin;
-  tab.on("pageerror", (err) => issues.push(`js error: ${firstLine(err)}`));
-  tab.on("console", (msg) => {
-    if (msg.type() === "error") issues.push(`console error: ${firstLine(msg.text())}`);
-  });
-  tab.on("requestfailed", (req) => {
-    const reason = req.failure()?.errorText ?? "";
-    if (!reason.includes("ERR_ABORTED")) issues.push(`request failed: ${req.method()} ${req.url()} ${reason}`);
-  });
-  tab.on("response", (res) => {
-    const req = res.request();
-    const status = res.status();
-    // Inertia answers a stale asset version with 409 and reloads; that is not a failure.
-    if (status >= 400 && status !== 409 && res.url().startsWith(origin)) {
-      const line = `HTTP ${status}: ${req.method()} ${res.url()}`;
-      // Plug.Debugger titles its dev error page "<Exception> at <METHOD> <path>".
-      pending.push(
-        res
-          .text()
-          .then((body) => body.match(/<title>([^<]*)<\/title>/)?.[1]?.trim())
-          .catch(() => undefined)
-          .then((title) => issues.push(title ? `${line} (${title})` : line)),
-      );
-    }
-    if (req.headers()["x-inertia"] && !res.headers()["x-inertia"] && status < 300) {
-      issues.push(`non-Inertia response to an Inertia visit: ${req.method()} ${res.url()}`);
-    }
-  });
+  for (const check of tool.checks) check.listen?.(tab, ctx);
 
-  const url = new URL(page.path, config.baseUrl);
   try {
-    await tab.goto(url.href, { waitUntil: "networkidle", timeout: 30_000 });
-    const landed = new URL(tab.url());
-    if (landed.pathname !== url.pathname) {
-      issues.push(`redirected to ${landed.pathname}${existsSync(p.auth) ? "" : ` (no saved session: run \`${NAME} login\`)`}`);
-    }
+    await tab.goto(ctx.url.href, { waitUntil: "networkidle", timeout: 30_000 });
     if (page.waitFor) await tab.locator(page.waitFor).first().waitFor({ timeout: 10_000 });
     await tab.evaluate(() => document.fonts.ready);
-    const undefinedTags = await waitForUpgrade(tab, config.appBridgeStub);
-    if (undefinedTags.length) issues.push(`unknown web components (typo, or polaris.js not loaded): <${undefinedTags.join(">, <")}>`);
+    for (const check of tool.checks) await check.inspect?.(tab, ctx);
   } catch (err) {
-    issues.push(`load: ${firstLine(err)}`);
+    ctx.fail(`load: ${firstLine(err)}`);
   }
 
   const shot = join(p.out, `${page.name}.png`);
@@ -163,38 +126,14 @@ async function checkPage(browser: Browser, root: string, config: Config, page: P
     });
     visual = compare(shot, join(p.baseline, `${page.name}.png`), join(p.out, `${page.name}.diff.png`), page.maxDiffPixels ?? config.maxDiffPixels);
   } catch (err) {
-    issues.push(`screenshot: ${firstLine(err)}`);
+    ctx.fail(`screenshot: ${firstLine(err)}`);
   }
 
-  const bridgeCalls = config.appBridgeStub
-    ? await tab.evaluate(() => (window as any).__verifyBridgeCalls ?? []).catch(() => [])
-    : [];
-  await Promise.all(pending);
+  const notes: string[] = [];
+  for (const check of tool.checks) notes.push(...((await check.notes?.(tab, ctx).catch(() => [])) ?? []));
+  await Promise.all(deferred);
   await context.close();
-  return { name: page.name, path: page.path, issues: [...new Set(issues)], shot, bridgeCalls, ...visual };
-}
-
-/** Returns the custom-element tags still undefined once Polaris has had time to register its components. */
-async function waitForUpgrade(tab: Tab, bridgeStubbed: boolean): Promise<string[]> {
-  const undefinedTags = () =>
-    tab.evaluate(
-      // The stubbed app-bridge.js never defines its <ui-*> elements.
-      (skipUi) => [
-        ...new Set(
-          [...document.querySelectorAll("*")]
-            .map((el) => el.localName)
-            .filter((tag) => tag.includes("-") && !customElements.get(tag) && !(skipUi && tag.startsWith("ui-"))),
-        ),
-      ],
-      bridgeStubbed,
-    );
-  const deadline = Date.now() + UPGRADE_TIMEOUT_MS;
-  let tags = await undefinedTags();
-  while (tags.length && Date.now() < deadline) {
-    await tab.waitForTimeout(100);
-    tags = await undefinedTags();
-  }
-  return tags;
+  return { name: page.name, path: page.path, issues: [...new Set(issues)], notes, shot, ...visual };
 }
 
 function compare(shot: string, baseline: string, diffPath: string, maxPixels: number): Visual {
@@ -213,10 +152,10 @@ function compare(shot: string, baseline: string, diffPath: string, maxPixels: nu
 }
 
 /** Promotes the last run's screenshots to baselines; with no names, every page that was new or differed. */
-export function approve(root: string, config: Config, names: string[]): number {
-  const p = paths(root);
+export function approve(tool: UiTool, root: string, config: Config, names: string[]): number {
+  const p = paths(tool, root);
   const reportPath = join(p.out, "report.json");
-  if (!existsSync(reportPath)) throw new Error(`no report: run \`${NAME} run\` first`);
+  if (!existsSync(reportPath)) throw new Error(`no report: run \`verify ${tool.name} run\` first`);
   const report: Report = JSON.parse(readFileSync(reportPath, "utf8"));
   report.pages = report.pages.map((r) => {
     const target = names.length ? names.includes(r.name) : r.visual !== "match" && r.visual !== "skipped";
@@ -228,5 +167,5 @@ export function approve(root: string, config: Config, names: string[]): number {
   });
   writeFileSync(reportPath, JSON.stringify(report, null, 2));
   console.log();
-  return finish(root, config, report);
+  return finish(tool, root, config, report);
 }
