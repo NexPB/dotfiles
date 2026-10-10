@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, lstatSync, readFileSync, readlinkSync } from "node:fs";
 import { dirname, join } from "node:path";
 import type { UiTool } from "./tool.ts";
 
@@ -42,6 +42,26 @@ export function findRoot(tool: UiTool, start: string): string | null {
   }
 }
 
+/**
+ * Every app root for the tool that a session in `cwd` can touch: the nearest one at or above `cwd`,
+ * plus those below it in the same git repository, for sessions started at a monorepo's top.
+ */
+export function rootsFor(tool: UiTool, cwd: string): string[] {
+  const roots = new Set<string>();
+  const above = findRoot(tool, cwd);
+  if (above) roots.add(above);
+  const proc = Bun.spawnSync(
+    ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard", "--", `:(glob)**/${configFile(tool)}`],
+    { cwd, stderr: "ignore" },
+  );
+  if (proc.success) {
+    for (const file of proc.stdout.toString().split("\0").filter(Boolean)) {
+      roots.add(join(cwd, file.slice(0, -configFile(tool).length)).replace(/\/$/, ""));
+    }
+  }
+  return [...roots];
+}
+
 /** The config `init` writes: base values overlaid with the tool's defaults. */
 export function starterConfig(tool: UiTool): Config {
   return { ...BASE, ...tool.defaults, pages: [{ name: "home", path: "/" }] };
@@ -51,8 +71,13 @@ export function loadConfig(tool: UiTool, root: string): Config {
   const raw = JSON.parse(readFileSync(join(root, configFile(tool)), "utf8"));
   const defaults = { ...BASE, ...tool.defaults };
   const config: Config = { ...defaults, ...raw, viewport: { ...defaults.viewport, ...raw.viewport } };
+  const seen = new Set<string>();
   for (const page of config.pages) {
     if (!page.name || !page.path) throw new Error(`each page needs "name" and "path": ${JSON.stringify(page)}`);
+    // The name becomes a file name under out/ and baseline/.
+    if (!/^[\w-]+$/.test(page.name)) throw new Error(`page name "${page.name}" may only use letters, digits, _ and -`);
+    if (seen.has(page.name)) throw new Error(`duplicate page name "${page.name}"`);
+    seen.add(page.name);
   }
   return config;
 }
@@ -81,13 +106,23 @@ export function treeHash(tool: UiTool, root: string, config: Config): string {
   const out = git(root, ["ls-files", "-z", "--cached", "--others", "--exclude-standard", ...watchSpecs(tool, config)]);
   const hash = new Bun.CryptoHasher("sha256");
   for (const file of [...new Set(out.split("\0").filter(Boolean))].sort()) {
-    const full = join(root, file);
-    hash.update(file).update("\0");
-    // ls-files --cached still lists a tracked file deleted from the working tree.
-    if (existsSync(full)) hash.update(readFileSync(full));
-    hash.update("\0");
+    hash.update(file).update("\0").update(fileState(join(root, file))).update("\0");
   }
   return hash.digest("hex");
+}
+
+// ls-files --cached still lists a tracked file deleted from the working tree, and lists a
+// submodule or a symlink to a directory as one entry.
+function fileState(full: string): string | Buffer {
+  let stat;
+  try {
+    stat = lstatSync(full);
+  } catch {
+    return "missing";
+  }
+  if (stat.isSymbolicLink()) return `link:${readlinkSync(full)}`;
+  if (stat.isDirectory()) return "dir";
+  return Buffer.concat([Buffer.from("file:"), readFileSync(full)]);
 }
 
 /** True when a watched path differs from HEAD or is untracked. */

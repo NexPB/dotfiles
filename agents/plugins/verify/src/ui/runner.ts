@@ -31,6 +31,7 @@ export async function run(tool: UiTool, root: string, config: Config, only: stri
   mkdirSync(p.out, { recursive: true });
   mkdirSync(p.baseline, { recursive: true });
 
+  await warmUp(config);
   const { chromium } = await import("playwright");
   const browser = await chromium.launch();
   const results: PageResult[] = [];
@@ -49,6 +50,12 @@ export async function run(tool: UiTool, root: string, config: Config, only: stri
   const report: Report = { treeHash: hash, complete: !only.length, pages: results };
   writeFileSync(join(p.out, "report.json"), JSON.stringify(report, null, 2));
   return finish(tool, root, config, report);
+}
+
+// The first request after an edit can block on a dev-server recompile; take that hit once, not
+// once per concurrent page against each page's load timeout.
+async function warmUp(config: Config) {
+  await fetch(config.baseUrl, { redirect: "manual", signal: AbortSignal.timeout(120_000) }).catch(() => undefined);
 }
 
 /** Prints the report and writes the pass stamp when it is complete, green, and the tree is unchanged. */
@@ -85,14 +92,16 @@ async function checkPage(tool: UiTool, browser: Browser, root: string, config: C
   const p = paths(tool, root);
   const issues: string[] = [];
   const deferred: Promise<unknown>[] = [];
+  let closed = false;
   const hasAuth = existsSync(p.auth);
   const ctx: PageRun = {
+    tool,
     config,
     page,
     url: new URL(page.path, config.baseUrl),
     hasAuth,
-    fail: (issue) => issues.push(issue),
-    defer: (work) => deferred.push(work),
+    fail: (issue) => closed || issues.push(issue),
+    defer: (work) => closed || deferred.push(work),
   };
 
   const context = await browser.newContext({
@@ -105,18 +114,24 @@ async function checkPage(tool: UiTool, browser: Browser, root: string, config: C
   const tab = await context.newPage();
   for (const check of tool.checks) check.listen?.(tab, ctx);
 
-  try {
-    await tab.goto(ctx.url.href, { waitUntil: "networkidle", timeout: 30_000 });
-    if (page.waitFor) await tab.locator(page.waitFor).first().waitFor({ timeout: 10_000 });
-    await tab.evaluate(() => document.fonts.ready);
-    for (const check of tool.checks) await check.inspect?.(tab, ctx);
-  } catch (err) {
-    ctx.fail(`load: ${firstLine(err)}`);
-  }
-
   const shot = join(p.out, `${page.name}.png`);
+  rmSync(shot, { force: true });
   let visual: Visual = { visual: "skipped" };
   try {
+    await tab.goto(ctx.url.href, { waitUntil: "networkidle", timeout: 30_000 });
+    if (page.waitFor) {
+      await tab
+        .locator(page.waitFor)
+        .first()
+        .waitFor({ timeout: 10_000 })
+        .catch(() => ctx.fail(`waitFor: ${page.waitFor} not visible within 10s`));
+    }
+    await tab.evaluate(() => document.fonts.ready);
+    for (const check of tool.checks) {
+      await check.inspect?.(tab, ctx).catch((err) => ctx.fail(`inspect: ${firstLine(err)}`));
+    }
+    // Components upgraded during inspect can request fonts of their own.
+    await tab.evaluate(() => document.fonts.ready);
     await tab.screenshot({
       path: shot,
       fullPage: true,
@@ -126,12 +141,13 @@ async function checkPage(tool: UiTool, browser: Browser, root: string, config: C
     });
     visual = compare(shot, join(p.baseline, `${page.name}.png`), join(p.out, `${page.name}.diff.png`), page.maxDiffPixels ?? config.maxDiffPixels);
   } catch (err) {
-    ctx.fail(`screenshot: ${firstLine(err)}`);
+    ctx.fail(`load: ${firstLine(err)}`);
   }
 
   const notes: string[] = [];
   for (const check of tool.checks) notes.push(...((await check.notes?.(tab, ctx).catch(() => [])) ?? []));
-  await Promise.all(deferred);
+  while (deferred.length) await Promise.all(deferred.splice(0));
+  closed = true;
   await context.close();
   return { name: page.name, path: page.path, issues: [...new Set(issues)], notes, shot, ...visual };
 }
@@ -151,16 +167,21 @@ function compare(shot: string, baseline: string, diffPath: string, maxPixels: nu
   return { visual: "diff", diffPixels: pixels, diff: diffPath };
 }
 
-/** Promotes the last run's screenshots to baselines; with no names, every page that was new or differed. */
+/**
+ * Promotes the last run's screenshots to baselines. With no names, every new or changed page that
+ * has no other failure; a page whose screenshot was skipped can never be approved.
+ */
 export function approve(tool: UiTool, root: string, config: Config, names: string[]): number {
   const p = paths(tool, root);
   const reportPath = join(p.out, "report.json");
   if (!existsSync(reportPath)) throw new Error(`no report: run \`verify ${tool.name} run\` first`);
   const report: Report = JSON.parse(readFileSync(reportPath, "utf8"));
+  const unknown = names.filter((name) => !report.pages.some((r) => r.name === name));
+  if (unknown.length) throw new Error(`not in the last run: ${unknown.join(", ")}`);
   report.pages = report.pages.map((r) => {
-    const target = names.length ? names.includes(r.name) : r.visual !== "match" && r.visual !== "skipped";
-    if (!target) return r;
-    if (!existsSync(r.shot)) throw new Error(`no screenshot for ${r.name}`);
+    if (!(names.length ? names.includes(r.name) : r.visual !== "match" && !r.issues.length)) return r;
+    if (r.visual === "skipped" || !existsSync(r.shot)) throw new Error(`no screenshot for ${r.name} in the last run`);
+    if (r.visual === "match") return r;
     copyFileSync(r.shot, join(p.baseline, `${r.name}.png`));
     console.log(`approved ${r.name}`);
     return { ...r, visual: "match" };

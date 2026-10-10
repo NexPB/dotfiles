@@ -1,4 +1,4 @@
-- clean: []
+- clean: ['~/.claude/bin', '~/.claude/skills']
 - create:
     - ~/.config/ghostty
     - ~/.ssh
@@ -27,7 +27,9 @@
     ~/.claude/skills/prompt-analysis: agents/skills/prompt-analysis
     ~/.claude/skills/pr-review-comments: agents/skills/pr-review-comments
     ~/.claude/skills/simplify-docs: agents/skills/simplify-docs
-    ~/.claude/skills/verify: agents/plugins/verify
+    ~/.claude/skills/verify:
+        path: agents/plugins/verify
+        relink: true
     ~/.claude/skills/whut: agents/skills/whut
     ~/.vscode/extensions/duvel-theme: vscode/duvel
 - shell:

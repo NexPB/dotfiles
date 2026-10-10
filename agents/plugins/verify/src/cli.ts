@@ -2,11 +2,11 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tools } from "./tools/index.ts";
 import { configFile, findRoot, loadConfig, paths, starterConfig, type Config } from "./ui/config.ts";
-import { gate } from "./ui/gate.ts";
+import { baseline, gate } from "./ui/gate.ts";
 import type { UiTool } from "./ui/tool.ts";
 
 const USAGE = `usage: verify <tool> <command>
-       verify gate
+       verify gate | baseline
 
 tools: ${tools.map((t) => t.name).join(", ")}
 
@@ -15,7 +15,8 @@ tools: ${tools.map((t) => t.name).join(", ")}
   run [page...]      load each page, run the tool's checks, diff screenshots
   approve [page...]  make the last run's screenshots the baselines (default: every new or changed page)
 
-  gate               Claude Code Stop hook: block while any tool's watched files have no passing run
+  gate               Claude Code Stop hook: block while a tool's watched files changed this session with no passing run
+  baseline           Claude Code UserPromptSubmit hook: record the watched files' state on a session's first prompt
 
 exit codes: 0 pass, 1 fail, 2 usage or config error`;
 
@@ -25,12 +26,13 @@ try {
   process.exitCode = await main();
 } catch (err) {
   console.error(`verify: ${(err as Error).message}`);
-  // Exit 2 from a Stop hook blocks the stop, so a broken gate must not use it.
-  process.exitCode = first === "gate" ? 1 : 2;
+  // Exit 2 from a Stop or UserPromptSubmit hook blocks the stop or the prompt; a broken hook must not.
+  process.exitCode = first === "gate" || first === "baseline" ? 1 : 2;
 }
 
 async function main(): Promise<number> {
   if (first === "gate") return gate(tools);
+  if (first === "baseline") return baseline(tools);
   const tool = tools.find((t) => t.name === first);
   if (!tool || !["init", "login", "run", "approve"].includes(command ?? "")) {
     console.error(USAGE);

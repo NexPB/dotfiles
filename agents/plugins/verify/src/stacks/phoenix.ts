@@ -3,7 +3,7 @@ import type { Config } from "../ui/config.ts";
 
 export const defaults: Partial<Config> = {
   baseUrl: "http://localhost:4000",
-  // Git pathspecs: `*` crosses `/`, so `lib/*_web/*` is the whole web layer and nothing else in lib.
+  // Git pathspecs: `*` crosses `/`, so `lib/*_web/*` is every file under a `*_web` directory in lib.
   watch: ["assets/js", "assets/css", "lib/*_web/*", "lib/*_web.ex"],
 };
 

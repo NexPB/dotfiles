@@ -37,4 +37,4 @@ Controls the Stop hook of the [verify](README.md#verify-plugin) plugin.
 | Value | Effect |
 | --- | --- |
 | `off` | The hook lets every stop through. |
-| Unset, or any other value | The hook blocks a stop while a verify tool's watched files have uncommitted changes and no passing run matches them. |
+| Unset, or any other value | The hook blocks a stop while a verify tool's watched files changed during the session and no passing run matches them. |

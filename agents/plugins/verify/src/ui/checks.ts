@@ -8,7 +8,10 @@ export const jsErrors = (): Check => ({
   listen(tab, run) {
     tab.on("pageerror", (err) => run.fail(`js error: ${firstLine(err)}`));
     tab.on("console", (msg) => {
-      if (msg.type() === "error") run.fail(`console error: ${firstLine(msg.text())}`);
+      // Chromium logs every 4xx/5xx as "Failed to load resource"; httpErrors and failedRequests own those.
+      if (msg.type() === "error" && !msg.text().startsWith("Failed to load resource")) {
+        run.fail(`console error: ${firstLine(msg.text())}`);
+      }
     });
   },
 });
@@ -48,11 +51,12 @@ export const httpErrors = (opts: {
 });
 
 /** Fails when the page lands on a different path, which usually means the session expired. */
-export const redirects = (loginHint: string): Check => ({
+export const redirects = (): Check => ({
   async inspect(tab, run) {
     const landed = new URL(tab.url());
     if (landed.pathname !== run.url.pathname) {
-      run.fail(`redirected to ${landed.pathname}${run.hasAuth ? "" : ` (no saved session: ${loginHint})`}`);
+      const hint = run.hasAuth ? "session expired?" : "no saved session";
+      run.fail(`redirected to ${landed.pathname} (${hint}: run \`verify ${run.tool.name} login\`)`);
     }
   },
 });

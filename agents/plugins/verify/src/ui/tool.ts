@@ -2,14 +2,17 @@ import type { BrowserContext, Page as Tab } from "playwright";
 import type { Config, Page } from "./config.ts";
 
 export type PageRun = {
+  tool: UiTool;
   config: Config;
   page: Page;
   url: URL;
   /** Whether a saved login session was loaded into the browser context. */
   hasAuth: boolean;
-  /** Records a failure for this page. */
   fail: (issue: string) => void;
-  /** Delays the page's result until `work` settles, for listeners that do async work. */
+  /**
+   * Delays the page's result until `work` settles, for listeners that do async work. Once all
+   * deferred work has settled the page is closed, and later failures are dropped.
+   */
   defer: (work: Promise<unknown>) => void;
 };
 

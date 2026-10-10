@@ -14,7 +14,7 @@ export const shopifyAppUi: UiTool = {
     failedRequests(),
     httpErrors({ ignore: inertia.isVersionConflict, describe: phoenix.errorTitle }),
     inertia.protocol(),
-    redirects("run `verify shopify-app-ui login`"),
+    redirects(),
     customElements({ ignore: appBridge.ELEMENT_PREFIXES, hint: "typo in an <s-*> tag, or polaris.js not loaded" }),
   ],
 };
