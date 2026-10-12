@@ -1,0 +1,29 @@
+agents/skills/pr-loop/types/index.d.ts
+  s_6ed80a304019d5::t_adf1c1c32f602f 27
+agents/skills/pr-loop/hooks/github.ts
+  s_6ed80a304019d5::t_9de8999e4ac849 55,57-59
+agents/skills/pr-loop/tests/pr-loop.test.ts
+  s_6ed80a304019d5::t_5b6ce1939e84a9 56
+  s_6ed80a304019d5::t_fdcf2df6dce7ca 64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fc4f38e6e6b50e77ee59ab6799a02297eff32c04",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_6ed80a304019d5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c70772b1-0f73-4c89-bf8d-7009123f84e3",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
