@@ -1,0 +1,5 @@
+{
+  "name": "verify",
+  "description": "Verification loops for agent work: one skill per surface (verify:<surface>), a shared `verify` CLI, and a Stop hook that blocks finishing while changes have no passing run.",
+  "author": { "name": "Lorenzo" }
+}

@@ -38,9 +38,28 @@ a new copy and cannot delta-compress it.
 
 To turn the hook off, set `COMMENT_GUARD=off`. See [FLAGS.md](FLAGS.md).
 
+## verify plugin
+
+A Claude Code plugin at `agents/plugins/verify`, linked to `~/.claude/skills/verify`, which loads it in
+place. Each skill verifies one surface and runs as `/verify:<surface>`. The plugin puts the Bun CLI
+`bin/verify` on the Bash tool's `PATH` (`verify <surface> run`) and ships a `Stop` hook that blocks
+Claude from finishing while a surface's watched files changed during the session and no passing run
+covers them. The hook does nothing in a project without a `.verify/<surface>.json`. To turn it off, set
+`VERIFY_GATE=off`. See [FLAGS.md](FLAGS.md).
+
+| Skill | Checks |
+| --- | --- |
+| `verify:shopify-app-ui` | The embedded admin UI of a Shopify app on Phoenix and Inertia, through its standalone view: JS and console errors, failed requests, Phoenix error pages, Inertia protocol errors, undefined `<s-*>` web components, and pixel diffs against committed baselines. App Bridge is stubbed. |
+
+To add a UI surface, list its checks in a `UiTool` under `src/tools/`, register it in
+`src/tools/index.ts`, and add `skills/<surface>/SKILL.md`.
+
+`./install` runs `bun install` in the plugin and installs Playwright's Chromium.
+
 ## Dev tools (managed by [mise](https://mise.jdx.dev))
 
 Declared in `mise/config.toml`, symlinked to `~/.config/mise/config.toml`. Run `./install` (which calls `mise install`) to sync.
 
 - [ripgrep](https://github.com/BurntSushi/ripgrep) - Fast recursive grep.
 - [fd](https://github.com/sharkdp/fd) - User-friendly alternative to `find`.
+- [Bun](https://bun.sh) - Runtime for the CLIs in `agents/`.
