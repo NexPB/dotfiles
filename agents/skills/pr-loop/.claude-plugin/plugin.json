@@ -1,0 +1,6 @@
+{
+  "name": "pr-loop",
+  "version": "0.1.0",
+  "description": "A band for the current branch's PR (CI, review threads, Copilot's suppressed comments, review state), and a toast with the failing log in the conversation when CI ends",
+  "types": "./types/index.d.ts"
+}
