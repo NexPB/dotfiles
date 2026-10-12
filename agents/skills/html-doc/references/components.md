@@ -332,11 +332,11 @@ who decides and by when, and the options with the recommended one marked.
 ```html
 <ol class="decisions">
   <li>
-    <h4>Which cards do we launch with?</h4>
+    <h4>Which markets do we launch in?</h4>
     <span class="by">Director · before discovery starts</span>
     <ul>
-      <li>Pokémon only <span class="tag-rec">Recommended</span> — one catalog to build and check.</li>
-      <li>Pokémon and One Piece — twice the catalog work.</li>
+      <li>Japan only <span class="tag-rec">Recommended</span> — one tax setup to build and check.</li>
+      <li>Japan and Korea — twice the tax setup work.</li>
     </ul>
   </li>
 </ol>
@@ -437,11 +437,11 @@ know the step worked.
 
 ```html
 <div class="cmd">
-  <pre><code>cloudflared tunnel create local-lorenzo</code></pre>
+  <pre><code>cloudflared tunnel create dev-tunnel</code></pre>
   <button class="copy" type="button">Copy</button>
 </div>
 <div class="outlabel">You should see</div>
-<pre class="output"><code>Created tunnel local-lorenzo with id 87c920a3-…</code></pre>
+<pre class="output"><code>Created tunnel dev-tunnel with id 87c920a3-…</code></pre>
 ```
 
 Add this script once, at the end of `<body>`, when the page has a copy button. Where the
