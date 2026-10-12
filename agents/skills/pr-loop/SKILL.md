@@ -37,7 +37,7 @@ On a gh stack branch, run the `gh-stack` skill instead. A new commit on a lower 
 
 ### 4. Wait for CI
 
-1. Run `gh pr checks <PR> --watch --fail-fast --interval 20` in the background and wait for it to end.
+1. Run `gh pr checks <PR> --watch --fail-fast --interval 20` in the background and wait for it to end. Its end wakes this session; the plugin's row does not.
 2. On a failure, read the `[pr-loop] CI failed` row in the conversation. When there is none, run `gh pr checks <PR> --json name,state,link` and `gh run view --job <id> --log-failed`, and read only the failing step.
 3. When the failure is in code that this branch did not change (a deadlock, a timeout, a flaky test), do not change code. Tell the user, and offer `gh run rerun <run id> --failed`.
 4. Else fix it. Run the same check on your machine first: `mix credo --strict <files>`, `mix format --check-formatted`, the failing test file. Commit the fix as in step 2, push, and wait again.
