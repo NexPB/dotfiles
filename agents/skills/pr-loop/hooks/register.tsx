@@ -9,6 +9,7 @@ const TICK_MS = 15_000
 const IDLE_TICKS = 4
 const NO_CI_AFTER_MS = 5 * 60_000
 const LOG_BUDGET = 24_000
+const CHANGES_PR = /\bgit\b.*\b(push|checkout|switch|pull|merge|rebase|reset)\b|\bgh\s+(pr|stack|run|api)\b/
 
 const view = atom({ plugin: 'pr-loop', key: 'view' } as const, { status: 'loading' } as PrView)
 const watch = atom({ plugin: 'pr-loop', key: 'watch' } as const, null as CiWatch | null)
@@ -197,7 +198,7 @@ export const register: Register = on => {
 
   on('tool.call', { tool: 'Bash' }, async ($, e, next) => {
     const ran = await next(e)
-    if (!/\b(git|gh)\b/.test(e.command)) return ran
+    if (!CHANGES_PR.test(e.command)) return ran
     if (isPush(e.command) && ran.isError !== true) {
       const [pr, head] = await Promise.all([read($, view), $.process.run(['git', 'rev-parse', 'HEAD'])])
       const sha = head.stdout.trim()
