@@ -49,7 +49,7 @@ Match the length to the content. Cover the substance, and add no filler section,
 
 Take the first source that applies:
 
-1. **The user names one.** `claude` is the template's own tokens, unchanged. A brand, a site or a URL: fetch the page and its stylesheets with `curl -sL`, because WebFetch returns Markdown without the CSS. Take the colours, the fonts, the radius and the density from the CSS. A local `.html` or an earlier doc: reuse its `:root` tokens and fonts.
+1. **The user names one.** `claude` is the template's own tokens, unchanged. A brand, a site or a URL: fetch the page and its stylesheets with `curl -sL`, because WebFetch returns Markdown without the CSS. Take the colours, the fonts, the radius and the density from the CSS. When a brand font is not on Google Fonts, use the closest Google Font. A local `.html` or an earlier doc: reuse its `:root` tokens and fonts.
 2. **The repo has a design system.** A `DESIGN.md` or a token file at the repo root: follow it.
 3. **Otherwise**, choose a direction from the subject and the reader, as `references/direction.md` describes. Say it in one line before you build, for example "Look: a field-guide frame in the merchant's navy and amber, plain sans column."
 
