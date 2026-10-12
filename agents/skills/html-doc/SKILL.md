@@ -1,6 +1,6 @@
 ---
 name: html-doc
-description: "Generate a polished, self-contained local HTML document from the current conversation or from an existing file (a handoff, plan or research note) — a design doc, a stakeholder overview, a research write-up, a PR review or a setup guide — in a look taken from a named brand or page, the repo's DESIGN.md, or a direction chosen for the subject. Use when asked to turn a plan, design, findings, PR review, how-to or Markdown doc into a readable styled HTML page, or when the user points at impeccable.style for a doc."
+description: "Turn the conversation or a Markdown file into one styled, self-contained local HTML page: a design doc, stakeholder overview, research write-up, PR review or setup guide. Use when asked for a readable HTML page or doc, or when the user points at impeccable.style."
 argument-hint: "[source file] [design | stakeholder | research | review [reply] | guide] [look: claude | <brand> | <url> | <file.html>]"
 user-invocable: true
 ---
