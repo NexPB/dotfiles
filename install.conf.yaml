@@ -24,6 +24,7 @@
     ~/.claude/skills/elixir-ecto-explain-query: agents/skills/elixir-ecto-explain-query
     ~/.claude/skills/git-ai-search: agents/skills/git-ai-search
     ~/.claude/skills/html-doc: agents/skills/html-doc
+    ~/.claude/skills/pr: agents/skills/pr
     ~/.claude/skills/prompt-analysis: agents/skills/prompt-analysis
     ~/.claude/skills/pr-review-comments: agents/skills/pr-review-comments
     ~/.claude/skills/simplify-docs: agents/skills/simplify-docs
