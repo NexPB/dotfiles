@@ -1,7 +1,7 @@
 ---
 name: pr-loop
 description: "Run the review cycle on the current branch's PR: triage the review threads and Copilot's suppressed comments, fix the chosen ones with one fixup! commit each, push, wait for CI and fix what fails, post the replies, then update the PR description. Use for 'fix 1 2 and then post', 'a fixup! commit for each', 'push and wait for CI to pass', 'update the PR description', or when CI fails on the PR."
-argument-hint: "[thread numbers] [fix] [commit] [push] [ci] [post] [describe]"
+argument-hint: "[thread numbers] [fix] [push] [ci] [post] [describe]"
 ---
 
 # PR loop
@@ -12,7 +12,7 @@ The pr-loop plugin draws a band above the prompt with the PR's CI, open threads,
 
 ## Steps
 
-The user names the steps, for example "fix 1 2, commit each, push and post". Run the named steps in the order below and skip the others. When the user names no step, run step 1 and stop.
+The user names the steps, for example "fix 1 2 and then post". Run the named steps in the order below and skip the others. `fix` always commits, and `post` pushes first when a fix is not on the remote. When the user names no step, run step 1 and stop.
 
 ### 1. Triage
 
@@ -22,7 +22,7 @@ The user names the steps, for example "fix 1 2, commit each, push and post". Run
 
 ### 2. Fix and commit
 
-With `commit`, do one item at a time: fix it, commit it, then go to the next item. Each commit then holds one item only.
+Do one item at a time: fix it, commit it, then go to the next item. Each commit then holds one item only.
 
 1. Fix the item with the `pr-review-comments` skill, `fix <number>`. Fix a suppressed comment with the same rules.
 2. Find the commit on this branch that the fix corrects: `git blame -L <start>,<end> <base>..HEAD -- <file>` on the lines that the comment is about. A line that starts with `^` is older than the branch.
@@ -43,7 +43,7 @@ Run `git push`. On a gh stack branch, run `gh stack push`. Never force-push unle
 
 ### 5. Post
 
-Run the `pr-review-comments` skill with `post <numbers>`, after the push, so that each reply names a commit that the reviewer can see.
+Run step 3 first when a fix is not on the remote. Then run the `pr-review-comments` skill with `post <numbers>`, so that each reply names a commit that the reviewer can see.
 
 A suppressed comment has no thread to reply in. Post one PR comment for all of them with `gh pr comment <PR> --body-file <file>`: a heading, the counts, then the verdict and the commit of each one. Use the ASD-STE100 rules of `pr-review-comments`.
 
@@ -58,4 +58,4 @@ Give one line for each step that ran. End with the CI state and the count of the
 ## Rules
 
 - Never use `--no-verify`, never amend, and never rebase the pushed commits.
-- Never post or push a step that the user did not name.
+- Never push unless the user names `push`, `ci` or `post`. Never post unless the user names `post`.
