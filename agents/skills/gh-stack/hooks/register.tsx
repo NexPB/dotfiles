@@ -1,7 +1,7 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-import type { CiState, StackBranch, StackView } from '../types'
+import type { RollupState, StackBranch, StackView } from '../types'
 import { findGitOps, parseStackFile, verdict } from './guard'
 import type { RepoFacts } from './guard'
 
@@ -26,7 +26,7 @@ type ViewJson = {
 
 type PrNode = {
   state: StackBranch['prState']
-  commits: { nodes: { commit: { statusCheckRollup: { state: CiState } | null } }[] }
+  commits: { nodes: { commit: { statusCheckRollup: { state: RollupState } | null } }[] }
 }
 
 async function repoFacts($: EngineInterface, dir?: string): Promise<RepoFacts | undefined> {
@@ -120,7 +120,7 @@ function schedule($: EngineInterface, withCi: boolean) {
 
 const isPaneOpen = async ($: EngineInterface) => (await $.ui.panes()).some(pane => pane.id === PANE)
 
-const CI_BADGE: Record<CiState, { glyph: string; color: string }> = {
+const CI_BADGE: Record<RollupState, { glyph: string; color: string }> = {
   SUCCESS: { glyph: '✓ ci', color: 'success' },
   FAILURE: { glyph: '✗ ci', color: 'error' },
   ERROR: { glyph: '✗ ci', color: 'error' },
