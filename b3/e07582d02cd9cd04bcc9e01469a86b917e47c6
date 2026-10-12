@@ -1,0 +1,24 @@
+agents/claude-settings.json
+  s_5157c078d042f1::t_dcf0a2e5a8c092 6-34,38,41-42,44,47,50,53,55,60,63-64,66,70,76,81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b3e07582d02cd9cd04bcc9e01469a86b917e47c6",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_5157c078d042f1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1e5f9365-43c3-4678-84c7-3e573c939a01",
+        "model": "unknown"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
