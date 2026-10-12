@@ -61,9 +61,9 @@ Read `references/components.md` and map the content onto it, in this order:
 
 - **design**: Header → Lead/TL;DR → TOC → Context → Goals/Non-goals → Architecture diagram → Sequence → Components → Data/constraints → Implementation steps → Testing → Open questions/risks → Footer. To explain an existing system: Header → Lead → Context → How it works → Worked example → Where it breaks → Footer.
 - **stakeholder**: Header → Lead → Why it matters (value cards) → How it works (step flow) → What's needed (checklist) → In/out of scope → Roadmap → Talking points → FAQ → Decisions needed → Footer.
-- **research**: Header → Lead (the answer) → Question and context → Sources checked → Options comparison → Recommendation → Trade-offs → Open questions → Next steps → References → Footer.
+- **research**: Header → Lead (the answer) → TOC → Question and context → Sources checked → Options comparison → Recommendation → Trade-offs → Open questions → Next steps → References → Footer.
 - **review**: Header → Lead (the verdict) → What the change does → Direction → Blocking findings → Non-blocking findings → Questions for the author → Footer. A `reply` keeps Direction and Blocking findings, in ASD-STE100 Simplified Technical English.
-- **guide**: Header → Lead (what the reader has at the end) → Prerequisites → Steps (commands and expected output) → Optional setup → Troubleshooting → Prompt for your LLM → Footer.
+- **guide**: Header → Lead (what the reader has at the end) → TOC → Prerequisites → Steps (commands and expected output) → Optional setup → Troubleshooting → Prompt for your LLM → Footer.
 
 Use diagrams, branches, cards, timelines and highlighted code where they carry the content.
 
