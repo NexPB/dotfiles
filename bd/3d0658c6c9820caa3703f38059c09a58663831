@@ -1,0 +1,26 @@
+agents/skills/pr/SKILL.md
+  s_195ed5e67bbdbd::t_7774dcb9eedcd5 1-99
+install.conf.yaml
+  s_195ed5e67bbdbd::t_c23c7d92d8ccfd 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bd3d0658c6c9820caa3703f38059c09a58663831",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_195ed5e67bbdbd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f13e6961-9157-4e9c-a68d-007f2b3a4ba4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
