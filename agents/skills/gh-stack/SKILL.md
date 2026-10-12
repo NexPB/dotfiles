@@ -6,7 +6,7 @@ argument-hint: "[--prune]"
 
 # gh stack
 
-Bring the current stack up to date with its trunk, and push it. Every write goes through `gh stack`. A raw `git rebase`, `git pull` or force-push on a stack branch rewrites one layer and leaves the layers above it on the old commits. That is what puts each commit in a PR timeline three times. The gh-stack plugin blocks those commands.
+Bring the current stack up to date with its trunk, and push it. Every write goes through `gh stack`.
 
 `gh stack` runs non-interactive here, because stdout is not a TTY. It never prompts, and a prompt it needs becomes an abort.
 
@@ -46,7 +46,7 @@ Run `gh stack rebase`. It rebases each layer onto the tip of the layer below, bo
 3. For each file, read both sides before you edit. The parent layer is the new truth, and this layer's commit is the change to replay on top of it. Keep both intents. When the two changes cannot both be kept, stop and ask the user. Do not pick a side to get the rebase through.
 4. Remove every conflict marker. Confirm with `git diff --check`.
 5. Run the cheapest check the repo has for those files (the compiler, or the tests for that module).
-6. `git add <files>`, then `GIT_EDITOR=true gh stack rebase --continue`. Never `git rebase --continue`: it finishes this layer and leaves the layers above it on the old base.
+6. `git add <files>`, then `GIT_EDITOR=true gh stack rebase --continue`.
 7. On a new conflict, repeat this step for the next layer.
 
 If a resolution goes wrong, `gh stack rebase --abort` restores every branch.
@@ -65,7 +65,7 @@ If the same conflict came back on several layers and `git config rerere.enabled`
 
 ## Rules
 
-- Never run `git rebase`, `git pull` or `git push --force` on a stack branch.
+- Never run `git rebase`, `git rebase --continue`, `git pull` or `git push --force` on a stack branch. Each one moves one layer and leaves the layers above it on the old commits, which duplicates commits in their PRs. The gh-stack plugin blocks them.
 - Never `--no-verify`.
 - Never resolve a conflict by deleting the change of one side without the user's agreement.
 - Never run `gh stack modify`, `merge`, `submit` or `unstack` from this skill. They are interactive or affect GitHub beyond the branches.
