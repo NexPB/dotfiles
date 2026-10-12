@@ -27,7 +27,6 @@ Do one item at a time: fix it, commit it, then go to the next item. Each commit 
 1. Fix the item with the `pr-review-comments` skill, `fix <number>`. Fix a suppressed comment with the same rules.
 2. Find the commit on this branch that the fix corrects: `git blame -L <start>,<end> <base>..HEAD -- <file>` on the lines that the comment is about. On a gh stack branch, `<base>` is the layer below, not the trunk. A line that starts with `^` is older than the branch.
 3. Commit with the rules of the `commit` skill, by name: `git commit --fixup=<sha> -- <files>`. When the lines are older than the branch, write a normal commit message instead.
-4. Do not run `git rebase --autosquash`. It rewrites the pushed commits. The user squashes at merge.
 
 ### 3. Push
 
@@ -40,7 +39,7 @@ On a gh stack branch, run the `gh-stack` skill instead. A new commit on a lower 
 1. Run `gh pr checks <PR> --watch --fail-fast --interval 20` in the background and wait for it to end. Its end wakes this session; the plugin's row does not.
 2. On a failure, read the `[pr-loop] CI failed` row in the conversation. When there is none, run `gh pr checks <PR> --json name,state,link` and `gh run view --job <id> --log-failed`, and read only the failing step.
 3. When the failure is in code that this branch did not change (a deadlock, a timeout, a flaky test), do not change code. Tell the user, and offer `gh run rerun <run id> --failed`.
-4. Else fix it. Run the same check on your machine first: `mix credo --strict <files>`, `mix format --check-formatted`, the failing test file. Commit the fix as in step 2, push, and wait again.
+4. Else fix it. Run the failing check on your machine first: the same linter or formatter command, or the failing test file. Commit the fix as in step 2, push, and wait again.
 5. Stop after two failed rounds and report.
 
 ### 5. Post
@@ -59,5 +58,5 @@ Give one line for each step that ran. End with the CI state and the count of the
 
 ## Rules
 
-- Never use `--no-verify`, never amend, and never rebase the pushed commits outside gh stack.
+- Never rebase the pushed commits outside gh stack, `--autosquash` included. The user squashes at merge.
 - Never push unless the user names `push`, `ci` or `post`. Never post unless the user names `post`.
