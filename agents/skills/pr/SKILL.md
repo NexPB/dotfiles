@@ -17,7 +17,7 @@ Write the PR body. The repo decides the shape. This skill makes sure the Merge D
 
 Look for each of these. Read every one that exists before you write.
 
-- **PR template.** Match case-insensitively: `.github/pull_request_template.md`, `.github/PULL_REQUEST_TEMPLATE/*.md`, `docs/pull_request_template.md`, `pull_request_template.md` at the root. If there is none, check the org default: `gh api repos/<owner>/.github/contents/.github/pull_request_template.md -H "Accept: application/vnd.github.raw"`. If the folder holds several templates, pick the one that fits the change and say which.
+- **PR template.** `pull_request_template.md` or `PULL_REQUEST_TEMPLATE/*.md`, any case, in `.github/`, `docs/` or the root; else the org's `.github` repo. Of several, pick the one that fits and say which.
 - **PR guidelines.** The PR, review or merge sections of `CONTRIBUTING.md`, `CLAUDE.md`, `AGENTS.md` and `docs/`.
 - **Domain words.** `GLOSSARY.md`, `CONTEXT.md` or the like. Use its terms.
 - **Title convention.** `git log --oneline -20` on the base branch and `gh pr list --state merged --limit 10`.
@@ -56,7 +56,7 @@ The repo's template and guidelines win over the default below.
 
 **Blast Radius:** <one word>
 
-<optional: what breaks, and for whom, if this is wrong>
+<above `module`: what breaks, and for whom, if this is wrong>
 ```
 
 ## 4. Merge Danger
@@ -79,9 +79,9 @@ For a one-way door, name the step that cannot be undone and what must happen fir
 
 ### Blast Radius
 
-One word for the widest scope it can reach if it is wrong, for example `none`, `local`, `module`, `service`, `cross-service`, `customers`. Then list the ways it can break, each with who sees it: consumers of a changed API, other services that read the same data, mobile or old clients, layout shift, performance, jobs in flight during deploy, migrations on large tables.
+One word for the widest scope it can reach if it is wrong, for example `none`, `local`, `module`, `service`, `cross-service`, `customers`. Above `module`, list the ways it can break, each with who sees it: consumers of a changed API, other services that read the same data, mobile or old clients, layout shift, performance, jobs in flight during deploy, migrations on large tables.
 
-Trace each claim to a real `file:line` or caller. Never invent one. If you did not check a consumer, say it is unchecked. For a wide or risky change, suggest the `blast-radius` skill.
+Name the caller behind each listed break. Never invent one. If you did not check a consumer, say it is unchecked. For a wide or risky change, suggest the `blast-radius` skill.
 
 ## 5. Summary and Evidence
 
