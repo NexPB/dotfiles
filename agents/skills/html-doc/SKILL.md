@@ -24,7 +24,7 @@ Use the argument. Otherwise infer it:
 - "design doc", "proposal", "explain how X works", "for the team", "technical" → `design`
 - "stakeholders", "overview", "customer success", "director", "non-technical" → `stakeholder`
 - "research", "findings", "options", "compare", "what are our options" → `research`
-- "review this PR", "review doc", "draft a reply" → `review`
+- "review doc", "PR review as a page", "review reply" → `review`
 - "guide", "how-to", "setup", "migration", "walk the team through" → `guide`
 
 Ask only when the request fits two types equally.

@@ -1,6 +1,6 @@
 ---
 name: pr-loop
-description: "Run the review cycle on the current branch's PR: triage the review threads and Copilot's suppressed comments, fix the chosen ones with one fixup! commit each, push, wait for CI and fix what fails, post the replies, then update the PR description. Use for 'fix 1 2 and then post', 'a fixup! commit for each', 'push and wait for CI to pass', 'update the PR description', or when CI fails on the PR."
+description: "Run the review cycle on the current branch's PR: triage the review threads and Copilot's suppressed comments, fix the chosen ones with one fixup! commit each, push, wait for CI and fix what fails, post the replies, then update the PR description. Use for 'fix 1 2 and then post', 'a fixup! commit for each', 'push and wait for CI to pass', or when CI fails on the PR."
 argument-hint: "[thread numbers] [fix] [push] [ci] [post] [describe]"
 ---
 

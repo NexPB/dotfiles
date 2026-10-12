@@ -1,6 +1,6 @@
 ---
 name: pr-review-comments
-description: "Fetch unresolved review comments on a GitHub pull request, decide for each one whether it should be addressed, then discuss the verdicts, post replies, or fix the code, in any order. Every reply is written in ASD-STE100 Simplified Technical English. Use when asked to review PR comments, triage review feedback, draft or post replies to PR threads, or address review comments in code."
+description: "Fetch unresolved review comments on a GitHub pull request, decide for each one whether it should be addressed, then discuss the verdicts, post replies, or fix the code, in any order. Every reply is written in ASD-STE100 Simplified Technical English. Use when asked to review PR comments, triage review feedback, draft or post replies to PR threads, or address review comments in code. When one request also commits, pushes or waits for CI, use pr-loop."
 argument-hint: "[PR number] [discuss | post | fix] [thread numbers]"
 user-invocable: true
 ---
