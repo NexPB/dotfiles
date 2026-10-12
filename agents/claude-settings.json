@@ -1,52 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "effortLevel": "high",
   "env": {
     "CLAUDE_CODE_THRIFTY_SONIC": "false"
-  },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "~/.git-ai/bin/git-ai checkpoint claude --hook-input stdin",
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      },
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/bin/comment-guard",
-            "statusMessage": "Checking comments",
-            "timeout": 10,
-            "type": "command"
-          }
-        ],
-        "matcher": "Write|Edit"
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "~/.git-ai/bin/git-ai checkpoint claude --hook-input stdin",
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      }
-    ]
-  },
-  "model": "opus[1m]",
-  "modelSettings": {
-    "claude-opus-5": {
-      "effortLevel": "medium"
-    },
-    "claude-opus-5-5": {
-      "effortLevel": "medium"
-    }
   },
   "permissions": {
     "allow": [
@@ -67,6 +22,7 @@
     ],
     "defaultMode": "auto"
   },
+  "model": "opus[1m]",
   "skillOverrides": {
     "agents-sdk": "off",
     "cloudflare-email-service": "off",
@@ -75,6 +31,50 @@
     "web-perf": "off",
     "workers-best-practices": "off",
     "wrangler": "off"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.git-ai/bin/git-ai checkpoint claude --hook-input stdin"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/bin/comment-guard",
+            "timeout": 10,
+            "statusMessage": "Checking comments"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.git-ai/bin/git-ai checkpoint claude --hook-input stdin"
+          }
+        ]
+      }
+    ]
+  },
+  "effortLevel": "high",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "medium"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
   },
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark"
