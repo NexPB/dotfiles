@@ -36,6 +36,8 @@ export type CiWatch = {
   since: number
   /** The failed checks whose logs are already in the conversation. */
   reported: string[]
+  /** True when a push in this session started the watch; only then does a failure add its log to the conversation. */
+  isPushed: boolean
 }
 
 declare module 'claude-code' {

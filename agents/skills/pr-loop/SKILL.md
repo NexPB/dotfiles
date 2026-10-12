@@ -8,7 +8,7 @@ argument-hint: "[thread numbers] [fix] [push] [ci] [post] [describe]"
 
 One pass of the review cycle on the current branch's PR. It chains four skills: `pr-review-comments` (triage, fix, post), `commit` (the commit rules), `pr` (the PR body) and `blast-radius` (offered, never run).
 
-The pr-loop plugin draws a band above the prompt with the PR's CI, open threads, suppressed comments and review state. When CI fails, it adds the failing step of each job to the conversation as a row that starts with `[pr-loop] CI failed`.
+The pr-loop plugin draws a band above the prompt with the PR's CI, open threads, suppressed comments and review state. When CI fails after a push from this session, it adds the failing step of each job to the conversation as a row that starts with `[pr-loop] CI failed`.
 
 ## Steps
 

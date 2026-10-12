@@ -189,6 +189,25 @@ describe('ci watch', () => {
     await clock.advance(15_000)
     expect(toasts).toEqual(['#42 CI passed (1 checks)'])
   })
+
+  test('keeps the log out of the conversation for a run that no push of this session started', async ($, on) => {
+    const clock = mock.clock(on)
+    const session = mock.session(on)
+    const toasts: string[] = []
+    on('ui.toast', (_$, e) => {
+      toasts.push(e.text)
+      return { value: undefined } as never
+    })
+    const remote: Remote = { checks: [running('credo')], threads: [] }
+    onBranch(on, remote)
+    await $.session.start({ cwd: '/r', surface: 'terminal', isInteractive: true })
+    await clock.settle()
+
+    remote.checks = [done('credo', 'FAILURE', '77')]
+    await clock.advance(15_000)
+    expect(toasts).toEqual(['#42 CI failed: credo'])
+    expect(session.appended()).toEqual([])
+  })
 })
 
 describe('band', () => {

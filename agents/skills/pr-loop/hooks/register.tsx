@@ -82,8 +82,8 @@ async function reportFailures($: EngineInterface, pr: PrView, checks: FailedChec
 async function checkWatch($: EngineInterface, pr: PrView) {
   const now = await $.clock.now()
   let current = await read($, watch)
-  if (pr.status === 'ok' && pr.ci === 'pending' && current?.sha !== pr.sha) {
-    current = { pr: pr.number ?? 0, sha: pr.sha ?? '', since: now, reported: [] }
+  if (pr.status === 'ok' && pr.ci === 'pending' && current?.sha !== pr.sha && current?.isPushed !== true) {
+    current = { pr: pr.number ?? 0, sha: pr.sha ?? '', since: now, reported: [], isPushed: false }
     await update($, watch, () => current)
   }
   if (current === null) return
@@ -109,10 +109,10 @@ async function checkWatch($: EngineInterface, pr: PrView) {
     $.ui.toast(
       `#${pr.number} CI failed: ${fresh.map(check => check.name).join(', ')}` +
         (isDone ? '' : ` (${running} still running)`) +
-        '. The log is in the conversation.',
+        (current.isPushed ? '. The log is in the conversation.' : ''),
       { timeoutMs: 10_000 },
     )
-    await reportFailures($, pr, fresh)
+    if (current.isPushed) await reportFailures($, pr, fresh)
   } else if (isDone) {
     $.ui.toast(
       failedCount === 0
@@ -203,7 +203,7 @@ export const register: Register = on => {
       const sha = head.stdout.trim()
       if (pr.status === 'ok' && pr.number !== undefined && head.exitCode === 0 && sha !== '') {
         const now = await $.clock.now()
-        await update($, watch, (): CiWatch => ({ pr: pr.number ?? 0, sha, since: now, reported: [] }))
+        await update($, watch, (): CiWatch => ({ pr: pr.number ?? 0, sha, since: now, reported: [], isPushed: true }))
       }
     }
     schedule($)
