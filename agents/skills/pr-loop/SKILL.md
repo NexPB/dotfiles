@@ -25,13 +25,15 @@ The user names the steps, for example "fix 1 2 and then post". Run the named ste
 Do one item at a time: fix it, commit it, then go to the next item. Each commit then holds one item only.
 
 1. Fix the item with the `pr-review-comments` skill, `fix <number>`. Fix a suppressed comment with the same rules.
-2. Find the commit on this branch that the fix corrects: `git blame -L <start>,<end> <base>..HEAD -- <file>` on the lines that the comment is about. A line that starts with `^` is older than the branch.
+2. Find the commit on this branch that the fix corrects: `git blame -L <start>,<end> <base>..HEAD -- <file>` on the lines that the comment is about. On a gh stack branch, `<base>` is the layer below, not the trunk. A line that starts with `^` is older than the branch.
 3. Commit with the rules of the `commit` skill, by name: `git commit --fixup=<sha> -- <files>`. When the lines are older than the branch, write a normal commit message instead.
 4. Do not run `git rebase --autosquash`. It rewrites the pushed commits. The user squashes at merge.
 
 ### 3. Push
 
-Run `git push`. On a gh stack branch, run `gh stack push`. Never force-push unless the user asks.
+Run `git push`. Never force-push unless the user asks.
+
+On a gh stack branch, run the `gh-stack` skill instead. A new commit on a lower layer must reach the layers above it, so `gh stack sync` rebases those layers and pushes them. Only gh stack may rebase pushed commits.
 
 ### 4. Wait for CI
 
@@ -57,5 +59,5 @@ Give one line for each step that ran. End with the CI state and the count of the
 
 ## Rules
 
-- Never use `--no-verify`, never amend, and never rebase the pushed commits.
+- Never use `--no-verify`, never amend, and never rebase the pushed commits outside gh stack.
 - Never push unless the user names `push`, `ci` or `post`. Never post unless the user names `post`.
