@@ -1,0 +1,6 @@
+{
+  "name": "gh-stack",
+  "version": "0.1.0",
+  "description": "A pane for the current gh stack, and a guard that sends rebase, pull and force-push on stack branches through gh stack",
+  "types": "./types/index.d.ts"
+}

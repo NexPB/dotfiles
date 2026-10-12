@@ -22,6 +22,7 @@
     ~/.claude/skills/build: agents/skills/build
     ~/.claude/skills/commit: agents/skills/commit
     ~/.claude/skills/elixir-ecto-explain-query: agents/skills/elixir-ecto-explain-query
+    ~/.claude/skills/gh-stack: agents/skills/gh-stack
     ~/.claude/skills/git-ai-search: agents/skills/git-ai-search
     ~/.claude/skills/html-doc: agents/skills/html-doc
     ~/.claude/skills/pr: agents/skills/pr
