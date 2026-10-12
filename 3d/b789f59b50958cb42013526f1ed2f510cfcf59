@@ -1,0 +1,25 @@
+agents/skills/pr-loop/SKILL.md
+  s_6ed80a304019d5::t_795917ca6e9328 42
+  s_6ed80a304019d5::t_99ec65c16e0290 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3db789f59b50958cb42013526f1ed2f510cfcf59",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_6ed80a304019d5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c70772b1-0f73-4c89-bf8d-7009123f84e3",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
