@@ -52,14 +52,11 @@ export function readChecks(checks: Check[]): {
 
 const SUPPRESSED = /(?:Suppressed comments|Comments suppressed due to low confidence)\s*\((\d+)\)/i
 
-/** The suppressed comment count of the latest Copilot review that has a body. */
+/** The suppressed comment count summed over every Copilot review, duplicates included. */
 export function countSuppressed(reviews: Review[]): number {
-  const latest = reviews
-    .filter(review => /copilot/i.test(review.author?.login ?? '') && (review.body ?? '') !== '')
-    .sort((a, b) => (a.submittedAt ?? '').localeCompare(b.submittedAt ?? ''))
-    .at(-1)
-
-  return Number(latest?.body?.match(SUPPRESSED)?.[1] ?? 0)
+  return reviews
+    .filter(review => /copilot/i.test(review.author?.login ?? ''))
+    .reduce((sum, review) => sum + Number(review.body?.match(SUPPRESSED)?.[1] ?? 0), 0)
 }
 
 export function toView(branch: string, pr: PrJson): PrView {

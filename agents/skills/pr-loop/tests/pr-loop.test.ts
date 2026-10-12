@@ -53,7 +53,7 @@ describe('github', () => {
     expect(lines.length).toBe(150)
   })
 
-  test('counts the suppressed comments of the latest Copilot review only', () => {
+  test('counts the suppressed comments of every Copilot review', () => {
     const copilot = { login: 'copilot-pull-request-reviewer' }
     expect(
       countSuppressed([
@@ -61,7 +61,7 @@ describe('github', () => {
         { author: copilot, body: COPILOT_BODY, submittedAt: '2026-09-15T00:00:00Z' },
         { author: { login: 'octocat' }, body: 'Suppressed comments (2)', submittedAt: '2026-09-16T00:00:00Z' },
       ]),
-    ).toBe(5)
+    ).toBe(13)
     expect(countSuppressed([{ author: copilot, body: 'Comments suppressed due to low confidence (3)' }])).toBe(3)
     expect(countSuppressed([])).toBe(0)
   })

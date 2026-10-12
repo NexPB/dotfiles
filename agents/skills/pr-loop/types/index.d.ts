@@ -24,7 +24,7 @@ export type PrView = {
   failed?: FailedCheck[]
   threads?: number
   outdatedThreads?: number
-  /** The count in the latest Copilot review's suppressed comments block, which opens no thread. */
+  /** The counts in every Copilot review's suppressed comments block, which opens no thread. */
   suppressed?: number
 }
 
