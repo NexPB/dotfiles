@@ -1,0 +1,24 @@
+agents/claude-settings.json
+  s_437dcce7867bc2::t_928d57a73c83de 80-81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "084e3dcc8074ae34f79260001fb1e789feb4fa94",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_437dcce7867bc2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "72814aaf-22c8-48c2-a762-1c21f3701366",
+        "model": "unknown"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
