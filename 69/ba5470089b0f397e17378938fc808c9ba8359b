@@ -1,0 +1,46 @@
+agents/skills/pr/SKILL.md
+  s_8bb9c1b324da1e::t_47d1f49e931f2f 94-95
+  s_8bb9c1b324da1e::t_6f4aacacf11747 102
+install.conf.yaml
+  s_8bb9c1b324da1e::t_4a62082c6df19c 35
+agents/skills/ui-screenshots/scripts/frame.sh
+  s_8bb9c1b324da1e::t_65b0c98d4069a0 25-27
+  s_8bb9c1b324da1e::t_cbca61718f0a5e 1-24,28-34,36-38,40-50,53-54,57-67
+  s_8bb9c1b324da1e::t_c75b628f417cfd 35,55-56
+  s_8bb9c1b324da1e::t_6bf592a4ac9b7c 39
+  s_8bb9c1b324da1e::t_0006e133b799d1 51-52
+agents/skills/ui-screenshots/SKILL.md
+  s_437dcce7867bc2::t_af9fc21059f4df 3,21,28,30,32-45,47-48,51,54,59-71,73,80-81,91,94,103,105,107
+  s_8bb9c1b324da1e::t_a70c65ddecd1c8 1-2,4-20,22,24-27,29,31,46,49-50,52-53,55-58,72,74-77,79,82-90,92-93,95-102,104,106,108-115
+  s_8bb9c1b324da1e::t_0ca5e52090a5ac 23
+  s_8bb9c1b324da1e::t_178b63cd3d4f6b 78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "69ba5470089b0f397e17378938fc808c9ba8359b",
+  "prompts": {},
+  "humans": {
+    "h_8c8bb3a0db3180": {
+      "author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_437dcce7867bc2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "72814aaf-22c8-48c2-a762-1c21f3701366",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    },
+    "s_8bb9c1b324da1e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1fa5d128-1ae6-43d1-8e2b-36a39d5dfd24",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "NexPB <1289189+NexPB@users.noreply.github.com>"
+    }
+  }
+}
