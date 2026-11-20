@@ -91,9 +91,12 @@ Keep both short. Skip preambles.
 
 **Evidence.** Show before and after. A screenshot is best for a visual change; test or command output is next. Run the relevant test if it is cheap. Never invent output; if you have no evidence, say what is unverified.
 
+For a UI change, run the `ui-screenshots` skill and put its snippet in Evidence.
+
 ## 6. Hand it back
 
 - Default: print the title and the body for the user to review.
 - `--create`: run `gh pr create --title <title> --body-file <file>` with the base from step 2. Follow the repo's draft convention.
 - `--update`: run `gh pr edit --body-file <file>`. Keep the parts of the existing body that a human wrote.
 - Never push or open a PR unless the user asks. Write the body file to a temp path, not the repo.
+- If the body has screenshot placeholders, list the image paths after the body. The user drags each file in place of its placeholder on GitHub.

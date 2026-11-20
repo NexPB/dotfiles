@@ -32,6 +32,7 @@
     ~/.claude/skills/pr-loop: agents/skills/pr-loop
     ~/.claude/skills/pr-review-comments: agents/skills/pr-review-comments
     ~/.claude/skills/simplify-docs: agents/skills/simplify-docs
+    ~/.claude/skills/ui-screenshots: agents/skills/ui-screenshots
     ~/.claude/skills/whut: agents/skills/whut
     ~/.vscode/extensions/duvel-theme: vscode/duvel
 - shell:
