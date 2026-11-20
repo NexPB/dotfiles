@@ -6,7 +6,9 @@
     - ~/.claude/bin
     - ~/.config/mise
     - ~/.vscode/extensions
+    - ~/.local/bin
 - link:
+    ~/.local/bin/phx-up: bin/phx-up
     ~/.config/ghostty/config: ghostty/config
     ~/.config/mise/config.toml:
         path: mise/config.toml

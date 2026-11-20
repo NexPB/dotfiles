@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Usage: phx-up [ngrok|cloudflared|none]   (default: ngrok)
+# Starts `iex -S mix phx.server` in this terminal and a tunnel to it. In Rex the
+# tunnel gets its own pane below; elsewhere it runs in the background.
+# Env: PHX_NGROK_DOMAIN for ngrok, PHX_CF_TUNNEL for cloudflared. Defaults come
+# from ~/.config/phx-up/env, which stays out of the repo.
+set -euo pipefail
+
+env_file="${XDG_CONFIG_HOME:-$HOME/.config}/phx-up/env"
+# shellcheck source=/dev/null
+[[ -f $env_file ]] && source "$env_file"
+
+port="${PORT:-4000}"
+
+case "${1:-ngrok}" in
+  ngrok) tunnel=(ngrok http "$port" --domain "${PHX_NGROK_DOMAIN:?set PHX_NGROK_DOMAIN}") ;;
+  cf | cloudflared) tunnel=(cloudflared tunnel run --url "http://localhost:$port" "${PHX_CF_TUNNEL:?set PHX_CF_TUNNEL}") ;;
+  none) tunnel=() ;;
+  *) echo "usage: phx-up [ngrok|cloudflared|none]" >&2; exit 2 ;;
+esac
+
+cleanup() { :; }
+
+if ((${#tunnel[@]})); then
+  if [[ -n "${REX_SESSION:-}" && -n "${REX_BLOCK:-}" ]]; then
+    tunnel_block=$(
+      rex split -s "$REX_SESSION" -b "$REX_BLOCK" --split=below --ratio 25 \
+        --label "${tunnel[0]}" --focus=false --keep-open -c "$PWD" --json -- "${tunnel[@]}" |
+        jq -er '.block_ids[0]'
+    )
+    cleanup() { rex block close -s "$REX_SESSION" "$tunnel_block" >/dev/null 2>&1 || true; }
+  else
+    log="${TMPDIR:-/tmp}/phx-up-${tunnel[0]}.log"
+    "${tunnel[@]}" >"$log" 2>&1 &
+    tunnel_pid=$!
+    echo "${tunnel[0]} running in background, log: $log"
+    cleanup() { kill "$tunnel_pid" 2>/dev/null || true; }
+  fi
+fi
+
+trap cleanup EXIT
+iex -S mix phx.server
